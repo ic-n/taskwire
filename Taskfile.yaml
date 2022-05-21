@@ -1,0 +1,19 @@
+version: 3
+
+tasks:
+  flutter:
+    cmds:
+      - cmd: flutter run -d windows
+
+  go:
+    cmds:
+      - cmd: go build -buildmode=c-shared -o taskwire/lib.so ./taskwire
+      - cmd: go build -buildmode=c-shared -o taskwire/lib.dll ./taskwire
+      - cmd: go build -buildmode=c-shared -o taskwire/lib.dylib ./taskwire
+
+  sshtest:
+    cmds:
+      - cmd: docker rm -f sshdummy
+        ignore_error: true
+      - cmd: docker build --build-arg PASSWORD=taskwire -t sshdummy -f test/ssh/Dockerfile .
+      - cmd: docker run --name sshdummy -d -p 2222:22 sshdummy
