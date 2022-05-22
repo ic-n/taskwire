@@ -4,53 +4,44 @@ import "C"
 import (
 	"bytes"
 	"fmt"
-	"strconv"
 	"strings"
 
 	"golang.org/x/crypto/ssh"
 )
 
+// C.GoString(hello)
+// C.CString("Hello")
+
 func main() {
-	Top()
+	_ = SingleCall
 }
 
-//export Top
-func Top() int64 {
+//export SingleCall
+func SingleCall(user, passord, dial, command *C.char) *C.char {
 	config := &ssh.ClientConfig{
-		User: "root",
+		User: C.GoString(user),
 		Auth: []ssh.AuthMethod{
-			ssh.Password("taskwire"),
+			ssh.Password(C.GoString(passord)),
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
-	client, err := ssh.Dial("tcp", "127.0.0.1:2222", config)
+	client, err := ssh.Dial("tcp", C.GoString(dial), config)
 	if err != nil {
-		fmt.Print("Failed to dial: ", err)
-		return 901
+		return C.CString(fmt.Sprint("Failed to dial: ", err))
 	}
 	defer client.Close()
 
-	// Each ClientConn can support multiple interactive sessions,
-	// represented by a Session.
 	session, err := client.NewSession()
 	if err != nil {
-		fmt.Print("Failed to create session: ", err)
-		return 902
+		return C.CString(fmt.Sprint("Failed to create session: ", err))
 	}
 	defer session.Close()
 
-	// Once a Session is created, you can execute a single command on
-	// the remote side using the Run method.
 	var b bytes.Buffer
 	session.Stdout = &b
-	if err := session.Run(`bash -c "echo $RANDOM"`); err != nil {
-		fmt.Print("Failed to run: " + err.Error())
-		return 903
+	if err := session.Run(C.GoString(command)); err != nil {
+		return C.CString(fmt.Sprint("Failed to run: " + err.Error()))
 	}
-	v, err := strconv.Atoi(strings.TrimSpace(b.String()))
-	if err != nil {
-		fmt.Print("Failed to convert to string: " + err.Error())
-		return 904
-	}
-	return int64(v)
+
+	return C.CString(strings.TrimSpace(b.String()))
 }

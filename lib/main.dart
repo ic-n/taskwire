@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:taskwire/taskwire/bindings.dart';
 
@@ -15,19 +17,53 @@ class AppWrapper extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const App(),
+      home: App(),
     );
   }
 }
 
-class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+class App extends StatefulWidget {
+  App({Key? key}) : super(key: key);
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  String _cmd = "echo tset123";
+  String _out = "...";
+
+  void typeCommand(String cmd) {
+    setState(() {
+      _cmd = cmd;
+    });
+  }
+
+  void displayOutput(String out) {
+    setState(() {
+      _out = out;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text(connect().toString()),
-      appBar: AppBar(title: const Text('Taskwire')),
-      );
+      body: Column(
+        children: [
+          TextField(
+            onChanged: (value) => typeCommand(value),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              displayOutput(
+                  singleCall('root', 'taskwire', '127.0.0.1:2222', _cmd));
+            },
+            child: const Text("Execute"),
+          ),
+          Text(_out),
+        ],
+      ),
+      appBar: AppBar(),
+    );
   }
 }

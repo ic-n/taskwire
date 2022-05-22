@@ -68,7 +68,7 @@ typedef struct { void *data; GoInt len; GoInt cap; } GoSlice;
 extern "C" {
 #endif
 
-extern __declspec(dllexport) GoInt64 Top();
+extern __declspec(dllexport) char* SingleCall(char* user, char* passord, char* dial, char* command);
 
 #ifdef __cplusplus
 }
