@@ -1,11 +1,26 @@
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:taskwire/taskwire/bindings.dart';
+// import 'package:taskwire/taskwire/bindings.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:taskwire/pages/jobs.dart';
+import 'package:taskwire/pages/servers.dart';
+import 'package:taskwire/pages/settings.dart';
 
 void main() {
   runApp(const AppWrapper());
 }
+
+const refreshing = Color(0xFF62de84);
+const reassurance = Color(0xFF31aa51);
+const friendly = Color(0xFFffcb6b);
+const confidence = Color(0xFFf3a412);
+const authority = Color(0xFF75a1ff);
+const intelegence = Color(0xFF1b5ff3);
+const bg = Color(0x64292d3e);
+const fgl = Color(0xFFfffefe);
+const fg = Color(0xFFb0b2bd);
 
 class AppWrapper extends StatelessWidget {
   const AppWrapper({Key? key}) : super(key: key);
@@ -15,55 +30,110 @@ class AppWrapper extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: App(),
+          primarySwatch: Colors.grey,
+          cardColor: bg,
+          backgroundColor: Colors.black,
+          textTheme: const TextTheme(
+              bodyText1: TextStyle(color: fg, fontFamily: 'JetBrainsMono'),
+              bodyText2: TextStyle(color: fgl, fontFamily: 'JetBrainsMono'))),
+      home: const Screen(screen: PageJobs()),
     );
   }
 }
 
-class App extends StatefulWidget {
-  App({Key? key}) : super(key: key);
+class Screen extends StatelessWidget {
+  const Screen({
+    Key? key,
+    required this.screen,
+  }) : super(key: key);
 
-  @override
-  State<App> createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  String _cmd = "echo tset123";
-  String _out = "...";
-
-  void typeCommand(String cmd) {
-    setState(() {
-      _cmd = cmd;
-    });
-  }
-
-  void displayOutput(String out) {
-    setState(() {
-      _out = out;
-    });
-  }
+  final Widget screen;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          TextField(
-            onChanged: (value) => typeCommand(value),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              displayOutput(
-                  singleCall('root', 'taskwire', '127.0.0.1:2222', _cmd));
-            },
-            child: const Text("Execute"),
-          ),
-          Text(_out),
-        ],
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: screen,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          // mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                BarButton(
+                  title: 'jobs',
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        PageTransition(
+                            type: PageTransitionType.fade,
+                            child: const Screen(screen: PageJobs())));
+                  },
+                ),
+                BarButton(
+                  title: 'servers',
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        PageTransition(
+                            type: PageTransitionType.fade,
+                            child: const Screen(screen: PageServers())));
+                  },
+                ),
+                BarButton(
+                  title: 'settings',
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        PageTransition(
+                            type: PageTransitionType.fade,
+                            child: const Screen(screen: PageSettings())));
+                  },
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 1),
+              child: SvgPicture.asset(
+                'assets/icons/logo/logo.svg',
+                height: 14,
+              ),
+            ),
+          ],
+        ),
       ),
-      appBar: AppBar(),
+    );
+  }
+}
+
+class BarButton extends StatelessWidget {
+  const BarButton({Key? key, required this.title, required this.onPressed})
+      : super(key: key);
+
+  final String title;
+  final void Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onPressed,
+      style: ButtonStyle(
+        foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+          if (states.contains(MaterialState.hovered)) {
+            return fgl;
+          }
+          return fg;
+        }),
+      ),
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 18),
+      ),
     );
   }
 }
