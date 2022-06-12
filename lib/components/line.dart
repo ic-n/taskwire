@@ -2,18 +2,28 @@ import 'package:flutter/material.dart';
 
 class LoadingLine extends CustomPainter {
   const LoadingLine({
+    this.debug = false,
     required this.progress,
   }) : super();
 
+  final bool debug;
   final double progress;
 
   @override
   void paint(Canvas canvas, Size size) {
-    const start = Offset(20, 20);
-    double endX = 20;
-    double endY = size.height - 20;
+    if (debug) {
+      var dp = Paint();
+      dp.color = Colors.red;
+      dp.strokeWidth = 5;
+      dp.strokeCap = StrokeCap.round;
+      canvas.drawLine(Offset.zero, Offset(size.width, size.height), dp);
+    }
 
-    var progressY = 20 + ((endY - 20) * progress) - 2;
+    const start = Offset(20, 34);
+    double endX = 20;
+    double endY = size.height + 6;
+
+    var progressY = start.dy + ((endY - start.dy) * progress) - 2;
 
     var paint = Paint();
     paint.color = Colors.white.withAlpha(35);
@@ -29,7 +39,5 @@ class LoadingLine extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => progress <= 1;
 }

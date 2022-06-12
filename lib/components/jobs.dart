@@ -23,7 +23,7 @@ class JobsWidget extends StatelessWidget {
                 onClick: () {}),
             Tile(
                 title: "Refresh docker",
-                body: "sudo apt update -y\nsudo apt install -y --update docker",
+                body: "sudo apt update -y\nsudo apt upgade -y docker",
                 path:
                     "assets/icons/yellow/streamlinehq-interface-arrows-right-circle-interface-essential-48.SVG",
                 onClick: () {}),
@@ -70,8 +70,8 @@ class Tile extends StatelessWidget {
                   TextButton(
                       onPressed: (onClick),
                       style: TextButton.styleFrom(
-                          minimumSize: Size(10, 30),
-                          shape: CircleBorder(),
+                          minimumSize: const Size(10, 30),
+                          shape: const CircleBorder(),
                           padding: EdgeInsets.zero,
                           alignment: Alignment.centerRight),
                       child: SvgPicture.asset(

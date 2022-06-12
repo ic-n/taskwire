@@ -19,9 +19,9 @@ class PageJobs extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const PageTitle(title: "Jobs"),
-              const SizedBox(
+            children: const [
+              PageTitle(title: "Jobs"),
+              SizedBox(
                 height: 12,
               ),
               JobsWidget(),
@@ -41,7 +41,7 @@ class PageJobs extends StatelessWidget {
               const SizedBox(
                 height: 12,
               ),
-              xxx(backend: Backend(),),
+              JobWidget(backend: Backend(),),
             ],
           ),
         ),
