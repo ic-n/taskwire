@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:taskwire/cubits/cubits.dart';
+
 class JobsWidget extends StatelessWidget {
   const JobsWidget({
     Key? key,
@@ -9,25 +12,36 @@ class JobsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: GridView.count(
-          crossAxisCount: 3,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          childAspectRatio: 2,
-          children: [
+      child: BlocProvider(
+        create: (context) => JobCardsCubit(),
+        child: BlocBuilder<JobCardsCubit, List<JobCard>>(
+            builder: (context, state) {
+          var tiles = [
             Tile(
                 title: "New task",
                 body: "",
                 path:
                     "assets/icons/yellow/streamlinehq-interface-add-circle-interface-essential-48.SVG",
-                onClick: () {}),
-            Tile(
-                title: "Refresh docker",
-                body: "sudo apt update -y\nsudo apt upgade -y docker",
+                onClick: () {
+                  context.read<JobCardsCubit>().addNew();
+                }),
+          ];
+          for (var jobCard in state) {
+            tiles.add(Tile(
+                title: jobCard.title,
+                body: jobCard.body,
                 path:
                     "assets/icons/yellow/streamlinehq-interface-arrows-right-circle-interface-essential-48.SVG",
-                onClick: () {}),
-          ]),
+                onClick: () {}));
+          }
+          return GridView.count(
+              crossAxisCount: 3,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 2,
+              children: tiles);
+        }),
+      ),
     );
   }
 }

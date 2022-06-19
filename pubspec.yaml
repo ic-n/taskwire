@@ -37,6 +37,8 @@ dependencies:
   ffi: ^1.2.1
   flutter_svg: ^1.1.0
   page_transition: ^2.0.5
+  shared_preferences: ^2.0.15
+  flutter_bloc: ^8.0.1
 
 dev_dependencies:
   flutter_test:
