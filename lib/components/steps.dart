@@ -106,8 +106,13 @@ class Step extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double wid = MediaQuery.of(context).size.width;
+
     var body = Container(
-      constraints: const BoxConstraints(minHeight: 40),
+      constraints: BoxConstraints(
+        minHeight: 40,
+        maxWidth: (wid / 3) - 65,
+      ),
       padding: const EdgeInsets.all(10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

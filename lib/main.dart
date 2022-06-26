@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 // import 'package:taskwire/taskwire/bindings.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,17 +6,8 @@ import 'package:taskwire/pages/jobs.dart';
 import 'package:taskwire/pages/servers.dart';
 import 'package:taskwire/pages/settings.dart';
 
-class MyBlocObserver extends BlocObserver {
-  @override
-  void onChange(BlocBase bloc, Change change) {
-    log('$change');
-    super.onChange(bloc, change);
-  }
-}
-
 void main() {
-  BlocOverrides.runZoned(() => runApp(const AppWrapper()),
-      blocObserver: MyBlocObserver());
+  runApp(const AppWrapper());
 }
 
 const refreshing = Color(0xFF62de84);

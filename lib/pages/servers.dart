@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taskwire/components/title.dart';
+import 'package:taskwire/ssh/ssh.dart';
 
 class PageServers extends StatelessWidget {
   const PageServers({
@@ -11,7 +12,15 @@ class PageServers extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
-          children: const [PageTitle(title: "Servers")],
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            PageTitle(title: "Servers"),
+            SizedBox(
+              height: 12,
+            ),
+            SSHTerm()
+          ],
         ));
   }
 }
