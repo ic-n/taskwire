@@ -7,6 +7,7 @@ import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:equatable/equatable.dart';
+import 'package:taskwire/ssh/connector.dart';
 
 Map<String, Color> colorMap = {
   '30': Colors.grey.shade500,
@@ -69,7 +70,7 @@ class Execution extends Equatable {
   final String cmd;
   final OutputTokens tokens;
   final int? exitCode;
-  final Function()? ctrlC;
+  final void Function()? ctrlC;
 
   @override
   List<Object> get props => [tokens];
@@ -91,21 +92,12 @@ class Terminal extends Cubit<Term> {
 
   void connect(String host, int port, String user, String password) {
     if (client == null) {
-      SSHSocket.connect(host, port).then((socket) {
-        client = SSHClient(
-          socket,
-          username: user,
-          onPasswordRequest: () => password,
-        );
-      });
+      connectClient(host, port, user, password).then((c) => client = c);
     }
   }
 
-  void sendCommand(
-      String cmd,
-      Function()? scrollDown,
-      Function(List<OutputToken>)? listen,
-      Function(Function()) killerCallback) {
+  void sendCommand(String cmd, void Function()? scrollDown, void Function(List<OutputToken>)? listen,
+      void Function(void Function()) killerCallback) {
     if (client != null) {
       client!.execute(cmd).then((value) {
         List<OutputToken> tokens = [];
@@ -136,11 +128,7 @@ class Terminal extends Cubit<Term> {
           }
         });
 
-        value.stdout
-            .cast<List<int>>()
-            .transform(utf8.decoder)
-            .transform(const LineSplitter())
-            .listen((line) {
+        value.stdout.cast<List<int>>().transform(utf8.decoder).transform(const LineSplitter()).listen((line) {
           Iterable<Match> matches = asciColors(line);
           int offset = 0;
           for (final Match m in matches) {
@@ -170,8 +158,7 @@ class Terminal extends Cubit<Term> {
   }
 
   Iterable<Match> asciColors(String line) {
-    var re = RegExp(r"(\x9B|\x1B\[)([0-?]*)([ -\/]*)([@-~])",
-        caseSensitive: false, multiLine: false);
+    var re = RegExp(r"(\x9B|\x1B\[)([0-?]*)([ -\/]*)([@-~])", caseSensitive: false, multiLine: false);
     Iterable<Match> matches = re.allMatches(line);
     return matches;
   }
@@ -210,7 +197,7 @@ class SSHTerm extends StatefulWidget {
 class _SSHTermState extends State<SSHTerm> {
   String cmd = "";
   List<OutputToken> tokens = [];
-  Function()? killer;
+  void Function()? killer;
 
   final ScrollController _controller = ScrollController();
 
@@ -273,8 +260,7 @@ class _SSHTermState extends State<SSHTerm> {
                 TextButton(
                   onPressed: killer,
                   style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.resolveWith<Color>((states) {
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
                       if (states.contains(MaterialState.hovered)) {
                         return Colors.white;
                       }
@@ -283,10 +269,7 @@ class _SSHTermState extends State<SSHTerm> {
                   ),
                   child: Text(
                     "stop it",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2
-                        ?.merge(TextStyle(color: Colors.black)),
+                    style: Theme.of(context).textTheme.bodyText2?.merge(const TextStyle(color: Colors.black)),
                   ),
                 )
               ],
@@ -304,15 +287,13 @@ class _SSHTermState extends State<SSHTerm> {
                   });
                   Future.delayed(const Duration(milliseconds: 250), () {
                     _controller.animateTo(_controller.position.maxScrollExtent,
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeIn);
+                        duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
                   });
                 }, (toks) {
                   setState(() {
                     tokens = toks;
                     _controller.animateTo(_controller.position.maxScrollExtent,
-                        duration: const Duration(milliseconds: 100),
-                        curve: Curves.easeIn);
+                        duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
                   });
                 }, (k) {
                   setState(() {
@@ -330,15 +311,13 @@ class _SSHTermState extends State<SSHTerm> {
               decoration: const InputDecoration(
                   isDense: true,
                   prefixIcon: Text("\$ "),
-                  prefixIconConstraints:
-                      BoxConstraints(minWidth: 0, minHeight: 0),
+                  prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none),
             ),
           ));
           return Container(
-            constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height - 100),
+            constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 100),
             child: ListView(
               controller: _controller,
               children: lines,

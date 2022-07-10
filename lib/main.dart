@@ -66,11 +66,8 @@ class Screen extends StatelessWidget {
                 BarButton(
                   title: 'jobs',
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        PageTransition(
-                            type: PageTransitionType.fade,
-                            child: const Screen(screen: PageJobs())));
+                    Navigator.push(context,
+                        PageTransition<Screen>(type: PageTransitionType.fade, child: const Screen(screen: PageJobs())));
                   },
                 ),
                 BarButton(
@@ -78,9 +75,8 @@ class Screen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                         context,
-                        PageTransition(
-                            type: PageTransitionType.fade,
-                            child: const Screen(screen: PageServers())));
+                        PageTransition<Screen>(
+                            type: PageTransitionType.fade, child: const Screen(screen: PageServers())));
                   },
                 ),
                 BarButton(
@@ -88,9 +84,8 @@ class Screen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                         context,
-                        PageTransition(
-                            type: PageTransitionType.fade,
-                            child: const Screen(screen: PageSettings())));
+                        PageTransition<Screen>(
+                            type: PageTransitionType.fade, child: const Screen(screen: PageSettings())));
                   },
                 ),
               ],
@@ -110,8 +105,7 @@ class Screen extends StatelessWidget {
 }
 
 class BarButton extends StatelessWidget {
-  const BarButton({Key? key, required this.title, required this.onPressed})
-      : super(key: key);
+  const BarButton({Key? key, required this.title, required this.onPressed}) : super(key: key);
 
   final String title;
   final void Function() onPressed;
