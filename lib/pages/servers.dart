@@ -19,7 +19,12 @@ class PageServers extends StatelessWidget {
             SizedBox(
               height: 12,
             ),
-            SSHTerm()
+            SSHTerm(
+              host: "localhost",
+              port: 2222,
+              user: "root",
+              password: "taskwire",
+            )
           ],
         ));
   }

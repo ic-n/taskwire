@@ -64,11 +64,12 @@ class OutputTokens extends Equatable {
 }
 
 class Execution extends Equatable {
-  const Execution(this.cmd, this.tokens, [this.exitCode]);
+  const Execution(this.cmd, this.tokens, [this.exitCode, this.ctrlC]);
 
   final String cmd;
-  final int? exitCode;
   final OutputTokens tokens;
+  final int? exitCode;
+  final Function()? ctrlC;
 
   @override
   List<Object> get props => [tokens];
@@ -88,20 +89,23 @@ class Terminal extends Cubit<Term> {
 
   SSHClient? client;
 
-  void connect() {
+  void connect(String host, int port, String user, String password) {
     if (client == null) {
-      SSHSocket.connect('localhost', 2222).then((socket) {
+      SSHSocket.connect(host, port).then((socket) {
         client = SSHClient(
           socket,
-          username: 'root',
-          onPasswordRequest: () => 'taskwire',
+          username: user,
+          onPasswordRequest: () => password,
         );
       });
     }
   }
 
   void sendCommand(
-      String cmd, Function()? scrollDown, Function(List<OutputToken>)? listen) {
+      String cmd,
+      Function()? scrollDown,
+      Function(List<OutputToken>)? listen,
+      Function(Function()) killerCallback) {
     if (client != null) {
       client!.execute(cmd).then((value) {
         List<OutputToken> tokens = [];
@@ -117,6 +121,20 @@ class Terminal extends Cubit<Term> {
             },
           );
         }
+
+        killerCallback(() {
+          if (t != null) {
+            t.cancel();
+          }
+          value.kill(SSHSignal.TERM);
+          emit(Term([
+            ...state.executions,
+            Execution(cmd, OutputTokens(tokens), 143),
+          ]));
+          if (scrollDown != null) {
+            scrollDown();
+          }
+        });
 
         value.stdout
             .cast<List<int>>()
@@ -172,7 +190,18 @@ class Terminal extends Cubit<Term> {
 }
 
 class SSHTerm extends StatefulWidget {
-  const SSHTerm({Key? key}) : super(key: key);
+  const SSHTerm({
+    Key? key,
+    required this.host,
+    required this.port,
+    required this.user,
+    required this.password,
+  }) : super(key: key);
+
+  final String host;
+  final int port;
+  final String user;
+  final String password;
 
   @override
   State<SSHTerm> createState() => _SSHTermState();
@@ -181,13 +210,14 @@ class SSHTerm extends StatefulWidget {
 class _SSHTermState extends State<SSHTerm> {
   String cmd = "";
   List<OutputToken> tokens = [];
+  Function()? killer;
 
   final ScrollController _controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     var t = Terminal();
-    t.connect();
+    t.connect(widget.host, widget.port, widget.user, widget.password);
 
     return BlocProvider(
         create: (context) => t,
@@ -217,7 +247,7 @@ class _SSHTermState extends State<SSHTerm> {
             ));
           }
 
-          if (tokens.isNotEmpty) {
+          if (killer != null) {
             lines.add(Text(
               '-> $cmd',
               style: Theme.of(context).textTheme.bodyText1,
@@ -237,35 +267,58 @@ class _SSHTermState extends State<SSHTerm> {
                 ),
               ));
             }
+
+            lines.add(Row(
+              children: [
+                TextButton(
+                  onPressed: killer,
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.resolveWith<Color>((states) {
+                      if (states.contains(MaterialState.hovered)) {
+                        return Colors.white;
+                      }
+                      return Colors.white.withAlpha(50);
+                    }),
+                  ),
+                  child: Text(
+                    "stop it",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.merge(TextStyle(color: Colors.black)),
+                  ),
+                )
+              ],
+            ));
           }
 
           lines.add(Container(
             constraints: const BoxConstraints(minWidth: 50),
             child: TextFormField(
               onFieldSubmitted: (value) {
-                context.read<Terminal>().sendCommand(
-                  cmd,
-                  () {
-                    setState(() {
-                      tokens = [];
-                    });
-                    Future.delayed(const Duration(milliseconds: 250), () {
-                      _controller.animateTo(
-                          _controller.position.maxScrollExtent,
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeIn);
-                    });
-                  },
-                  (toks) {
-                    setState(() {
-                      tokens = toks;
-                      _controller.animateTo(
-                          _controller.position.maxScrollExtent,
-                          duration: const Duration(milliseconds: 100),
-                          curve: Curves.easeIn);
-                    });
-                  },
-                );
+                context.read<Terminal>().sendCommand(cmd, () {
+                  setState(() {
+                    killer = null;
+                    tokens = [];
+                  });
+                  Future.delayed(const Duration(milliseconds: 250), () {
+                    _controller.animateTo(_controller.position.maxScrollExtent,
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeIn);
+                  });
+                }, (toks) {
+                  setState(() {
+                    tokens = toks;
+                    _controller.animateTo(_controller.position.maxScrollExtent,
+                        duration: const Duration(milliseconds: 100),
+                        curve: Curves.easeIn);
+                  });
+                }, (k) {
+                  setState(() {
+                    killer = k;
+                  });
+                });
               },
               onChanged: (value) {
                 setState(() {
@@ -273,6 +326,7 @@ class _SSHTermState extends State<SSHTerm> {
                 });
               },
               style: const TextStyle(color: Colors.white),
+              enabled: (killer == null),
               decoration: const InputDecoration(
                   isDense: true,
                   prefixIcon: Text("\$ "),
