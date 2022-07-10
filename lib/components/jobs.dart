@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:taskwire/cubits/cubits.dart';
+import 'package:taskwire/main.dart';
+import 'package:taskwire/pages/newtask.dart';
 
 class JobsWidget extends StatelessWidget {
   const JobsWidget({
@@ -21,7 +24,11 @@ class JobsWidget extends StatelessWidget {
                 body: "",
                 path: "assets/icons/yellow/streamlinehq-interface-add-circle-interface-essential-48.SVG",
                 onClick: () {
-                  context.read<JobCardsCubit>().addNew();
+                  // context.read<JobCardsCubit>().addNew();
+                  Navigator.push(
+                      context,
+                      PageTransition<Screen>(
+                          type: PageTransitionType.fade, child: const Screen(screen: PageNewTask())));
                 }),
           ];
           for (var jobCard in state) {

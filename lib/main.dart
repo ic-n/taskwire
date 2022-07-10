@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:taskwire/taskwire/bindings.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:taskwire/colors.dart';
 import 'package:taskwire/pages/jobs.dart';
 import 'package:taskwire/pages/servers.dart';
 import 'package:taskwire/pages/settings.dart';
@@ -9,16 +10,6 @@ import 'package:taskwire/pages/settings.dart';
 void main() {
   runApp(const AppWrapper());
 }
-
-const refreshing = Color(0xFF62de84);
-const reassurance = Color(0xFF31aa51);
-const friendly = Color(0xFFffcb6b);
-const confidence = Color(0xFFd9920d);
-const authority = Color(0xFF75a1ff);
-const intelegence = Color(0xFF1b5ff3);
-const bg = Color(0x64292d3e);
-const fgl = Color(0xFFfffefe);
-const fg = Color(0xFFb0b2bd);
 
 class AppWrapper extends StatelessWidget {
   const AppWrapper({Key? key}) : super(key: key);
@@ -28,6 +19,7 @@ class AppWrapper extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+          useMaterial3: true,
           primarySwatch: Colors.grey,
           cardColor: bg,
           backgroundColor: Colors.black,
