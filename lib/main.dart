@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
-// import 'package:taskwire/taskwire/bindings.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:taskwire/colors.dart';
+import 'package:taskwire/cubits/cubits.dart';
+import 'package:taskwire/cubits/liveterm.dart';
 import 'package:taskwire/pages/jobs.dart';
 import 'package:taskwire/pages/servers.dart';
 import 'package:taskwire/pages/settings.dart';
 
 void main() {
-  runApp(const AppWrapper());
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider<JobCardsCubit>(create: (context) => JobCardsCubit()),
+      BlocProvider<CurrentJobCubit>(create: (context) => CurrentJobCubit()),
+      BlocProvider<LiveTerminalCubit>(create: (context) => LiveTerminalCubit())
+    ],
+    child: const AppWrapper(),
+  ));
 }
 
 class AppWrapper extends StatelessWidget {

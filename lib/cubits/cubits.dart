@@ -1,17 +1,16 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class JobCard {
-  String title = "Refresh docker";
-  List<StepData> steps = [
-    StepData(command: "sudo apt update -y"),
-    StepData(command: "sudo apt upgade -y docker"),
-  ];
+  final String title;
+  final List<StepData> steps;
+
+  JobCard(this.title, this.steps);
 }
 
 class JobCardsCubit extends Cubit<List<JobCard>> {
   JobCardsCubit() : super([]);
 
-  void addNew() => emit([...state, JobCard()]);
+  void addNew(JobCard newCard) => emit([...state, newCard]);
 }
 
 class StepData {

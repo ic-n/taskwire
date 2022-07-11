@@ -24,7 +24,7 @@ class CommandStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Step(icon: status ? iconOK : iconContinue, iconClick: fn, progress: progress, lines: 2, children: [
+    return Step(icon: status ? iconOK : iconContinue, iconClick: fn, progress: progress, lines: 4, children: [
       Text(
         "Running command: $command",
         overflow: TextOverflow.ellipsis,

@@ -19,16 +19,24 @@ class PageNewTask extends StatelessWidget {
               title: "New task",
               back: true,
             ),
-            PageNewTaskBody(),
+            NewTaskForm(),
           ],
         ));
   }
 }
 
-class PageNewTaskBody extends StatelessWidget {
-  const PageNewTaskBody({
+class NewTaskForm extends StatefulWidget {
+  const NewTaskForm({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<NewTaskForm> createState() => _NewTaskFormState();
+}
+
+class _NewTaskFormState extends State<NewTaskForm> {
+  String title = "";
+  String body = "";
 
   @override
   Widget build(BuildContext context) {
@@ -38,28 +46,43 @@ class PageNewTaskBody extends StatelessWidget {
     var smallSpacer = const SizedBox(
       height: 10,
     );
-    return BlocProvider(
-      create: (context) => JobCardsCubit(),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          spacer,
-          const TWField("New task title", "My new task"),
-          smallSpacer,
-          const TWField(
-            "New task comands",
-            "echo hello;\napk add python3;\npip install pillow;\n",
-            lines: 9,
-          ),
-          spacer,
-          TWButton(
-              lable: "Save",
-              onPressed: () {
-                context.read<JobCardsCubit>().addNew();
-              }),
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        spacer,
+        TWField(
+          title: "New task title",
+          hint: "My new task",
+          callback: (s) {
+            setState(() {
+              title = s;
+            });
+          },
+        ),
+        smallSpacer,
+        TWField(
+          title: "New task comands",
+          hint: "echo hello;\napk add python3;\npip install pillow;\n",
+          callback: (s) {
+            setState(() {
+              body = s;
+            });
+          },
+          lines: 9,
+        ),
+        spacer,
+        TWButton(
+            lable: "Save",
+            callback: () {
+              List<StepData> steps = [];
+              body.trim().split("\n").forEach((cmd) {
+                steps.add(StepData(command: cmd.trim()));
+              });
+              context.read<JobCardsCubit>().addNew(JobCard(title, steps));
+              Navigator.pop(context);
+            }),
+      ],
     );
   }
 }
@@ -68,11 +91,11 @@ class TWButton extends StatelessWidget {
   const TWButton({
     Key? key,
     required this.lable,
-    required this.onPressed,
+    required this.callback,
   }) : super(key: key);
 
   final String lable;
-  final void Function() onPressed;
+  final void Function() callback;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +107,7 @@ class TWButton extends StatelessWidget {
         )),
         backgroundColor: MaterialStateProperty.all(confidence),
       ),
-      onPressed: onPressed,
+      onPressed: callback,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: Text(lable, style: Theme.of(context).textTheme.bodyText2),
@@ -94,16 +117,18 @@ class TWButton extends StatelessWidget {
 }
 
 class TWField extends StatelessWidget {
-  const TWField(
-    this.title,
-    this.hint, {
+  const TWField({
     Key? key,
+    required this.title,
+    required this.hint,
+    required this.callback,
     this.lines = 1,
   }) : super(key: key);
 
   final String title;
   final String hint;
   final int lines;
+  final void Function(String) callback;
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +145,7 @@ class TWField extends StatelessWidget {
           ),
         ),
         TextField(
+          onChanged: callback,
           style: Theme.of(context).textTheme.bodyText2,
           maxLines: lines,
           decoration: InputDecoration(

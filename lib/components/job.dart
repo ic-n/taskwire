@@ -23,27 +23,7 @@ class JobWidget extends StatelessWidget {
         timeline.add(CommandStep(
             status: state.steps[i].status,
             fn: () {
-              var newStep = state.steps[i];
-              if (!newStep.status) {
-                backend.sendCommand(newStep.command, (prog) {
-                  newStep.progress = prog;
-                  context.read<CurrentJobCubit>().updateStep(i, newStep);
-                }).then((value) {
-                  newStep.out = value;
-                  newStep.status = true;
-                  newStep.progress = 1;
-                  context.read<CurrentJobCubit>().updateStep(i, newStep);
-                });
-                newStep.out = "...";
-                newStep.status = false;
-                newStep.progress = 0;
-              } else {
-                newStep.out = "";
-                newStep.status = false;
-                newStep.progress = 0;
-              }
-              state.steps[i] = newStep;
-              context.read<CurrentJobCubit>().updateStep(i, newStep);
+              context.read<CurrentJobCubit>().updateStep(i, onClick(context, state.steps, i));
             },
             progress: state.steps[i].progress,
             command: state.steps[i].command,
@@ -52,15 +32,37 @@ class JobWidget extends StatelessWidget {
 
       timeline.add(EndStep(status: state.steps[state.steps.length - 1].status));
 
-      return Row(
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: timeline,
-          ),
-        ],
+      return Expanded(
+        child: ListView(
+          controller: ScrollController(),
+          children: timeline,
+        ),
       );
     });
+  }
+
+  StepData onClick(BuildContext context, List<StepData> steps, int i) {
+    var newStep = steps[i];
+    if (!newStep.status) {
+      backend.sendCommand(newStep.command, (prog) {
+        var newStep = steps[i];
+        newStep.progress = prog;
+        context.read<CurrentJobCubit>().updateStep(i, newStep);
+      }).then((value) {
+        var newStep = steps[i];
+        newStep.out = value;
+        newStep.status = true;
+        newStep.progress = 1;
+        context.read<CurrentJobCubit>().updateStep(i, newStep);
+      });
+      newStep.out = "...";
+      newStep.status = false;
+      newStep.progress = 0;
+    } else {
+      newStep.out = "";
+      newStep.status = false;
+      newStep.progress = 0;
+    }
+    return newStep;
   }
 }

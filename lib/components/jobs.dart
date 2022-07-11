@@ -15,39 +15,39 @@ class JobsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: BlocProvider(
-        create: (context) => JobCardsCubit(),
-        child: BlocBuilder<JobCardsCubit, List<JobCard>>(builder: (context, state) {
-          var tiles = [
-            Tile(
-                title: "New task",
-                body: "",
-                path: "assets/icons/yellow/streamlinehq-interface-add-circle-interface-essential-48.SVG",
-                onClick: () {
-                  // context.read<JobCardsCubit>().addNew();
-                  Navigator.push(
-                      context,
-                      PageTransition<Screen>(
-                          type: PageTransitionType.fade, child: const Screen(screen: PageNewTask())));
-                }),
-          ];
-          for (var jobCard in state) {
-            String body = "";
-            for (var step in jobCard.steps) {
-              body += "${step.command}; ";
-            }
-            tiles.add(Tile(
-                title: jobCard.title,
-                body: body,
-                path: "assets/icons/yellow/streamlinehq-interface-arrows-right-circle-interface-essential-48.SVG",
-                onClick: () {
-                  context.read<CurrentJobCubit>().steps(jobCard.steps);
-                }));
+      child: BlocBuilder<JobCardsCubit, List<JobCard>>(builder: (context, state) {
+        var tiles = [
+          Tile(
+              title: "New task",
+              body: "",
+              path: "assets/icons/yellow/streamlinehq-interface-add-circle-interface-essential-48.SVG",
+              onClick: () {
+                // context.read<JobCardsCubit>().addNew();
+                Navigator.push(context,
+                    PageTransition<Screen>(type: PageTransitionType.fade, child: const Screen(screen: PageNewTask())));
+              }),
+        ];
+        for (var jobCard in state) {
+          String body = "";
+          for (var step in jobCard.steps) {
+            body += "${step.command}; ";
           }
-          return GridView.count(
-              crossAxisCount: 3, mainAxisSpacing: 10, crossAxisSpacing: 10, childAspectRatio: 2, children: tiles);
-        }),
-      ),
+          tiles.add(Tile(
+              title: jobCard.title,
+              body: body,
+              path: "assets/icons/yellow/streamlinehq-interface-arrows-right-circle-interface-essential-48.SVG",
+              onClick: () {
+                context.read<CurrentJobCubit>().steps(jobCard.steps);
+              }));
+        }
+        return GridView.count(
+            controller: ScrollController(),
+            crossAxisCount: 3,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            childAspectRatio: 2,
+            children: tiles);
+      }),
     );
   }
 }
