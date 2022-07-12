@@ -145,8 +145,7 @@ class _SSHTermState extends State<SSHTerm> {
               enabledBorder: InputBorder.none),
         ),
       ));
-      return Container(
-        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 100),
+      return Expanded(
         child: ListView(
           controller: _controller,
           children: lines,
