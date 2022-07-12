@@ -67,6 +67,36 @@ class Job {
 class CurrentJobCubit extends Cubit<Job> {
   CurrentJobCubit() : super(Job());
 
+  void resetRuns() {
+    List<StepData> newSteps = [];
+    for (var i = 0; i < state.steps.length; i++) {
+      var newStep = state.steps[i];
+      newStep.out = "";
+      newStep.status = false;
+      newStep.progress = 0;
+      newSteps.add(newStep);
+    }
+    state.steps = newSteps;
+    emit(state);
+  }
+
+  void resetStep(int at) {
+    List<StepData> newSteps = [];
+    for (var i = 0; i < state.steps.length; i++) {
+      if (i == at) {
+        var newStep = state.steps[i];
+        newStep.out = "";
+        newStep.status = false;
+        newStep.progress = 0;
+        newSteps.add(newStep);
+        continue;
+      }
+      newSteps.add(state.steps[i]);
+    }
+    state.steps = newSteps;
+    emit(state);
+  }
+
   void updateStep(int at, StepData newStep) {
     List<StepData> newSteps = [];
     for (var i = 0; i < state.steps.length; i++) {

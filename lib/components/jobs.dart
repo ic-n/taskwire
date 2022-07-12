@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:taskwire/components/tools.dart';
 import 'package:taskwire/cubits/cubits.dart';
 import 'package:taskwire/main.dart';
 import 'package:taskwire/pages/newtask.dart';
@@ -14,49 +15,48 @@ class JobsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: BlocBuilder<JobCardsCubit, JobCards>(builder: (context, state) {
-        var tiles = [
-          Tile(
-              title: "New task",
-              body: "",
-              path: "assets/icons/yellow/streamlinehq-interface-add-circle-interface-essential-48.SVG",
-              onSecond: () {},
-              onMain: () {
+    return BlocBuilder<JobCardsCubit, JobCards>(builder: (context, state) {
+      List<Tile> tiles = [];
+      for (var jobIndex = 0; jobIndex < state.cards.length; jobIndex++) {
+        var jobCard = state.cards[jobIndex];
+        String body = "";
+        for (var step in jobCard.steps) {
+          body += "${step.command}; ";
+        }
+        tiles.add(Tile(
+            title: jobCard.title,
+            body: body,
+            path: "assets/icons/yellow/streamlinehq-interface-arrows-right-circle-interface-essential-48.SVG",
+            onSecond: () {
+              context.read<CurrentJobCubit>().steps(jobCard.steps);
+              context.read<JobCardsCubit>().setCurrentEdit(JobCard(jobCard.title, jobCard.steps, jobIndex));
+              Navigator.push(context,
+                  PageTransition<Screen>(type: PageTransitionType.fade, child: const Screen(screen: PageNewTask())));
+            },
+            onMain: () {
+              context.read<CurrentJobCubit>().steps(jobCard.steps);
+            }));
+      }
+      return Tools(
+          tools: [
+            ToolsItem(
+              iconPath: "assets/icons/yellow/streamlinehq-interface-add-circle-interface-essential-48.SVG",
+              label: "Add new task",
+              onClick: () {
                 context.read<CurrentJobCubit>().steps([]);
                 Navigator.push(context,
                     PageTransition<Screen>(type: PageTransitionType.fade, child: const Screen(screen: PageNewTask())));
-              }),
-        ];
-        for (var jobIndex = 0; jobIndex < state.cards.length; jobIndex++) {
-          var jobCard = state.cards[jobIndex];
-          String body = "";
-          for (var step in jobCard.steps) {
-            body += "${step.command}; ";
-          }
-          tiles.add(Tile(
-              title: jobCard.title,
-              body: body,
-              path: "assets/icons/yellow/streamlinehq-interface-arrows-right-circle-interface-essential-48.SVG",
-              onSecond: () {
-                context.read<CurrentJobCubit>().steps(jobCard.steps);
-                context.read<JobCardsCubit>().setCurrentEdit(JobCard(jobCard.title, jobCard.steps, jobIndex));
-                Navigator.push(context,
-                    PageTransition<Screen>(type: PageTransitionType.fade, child: const Screen(screen: PageNewTask())));
               },
-              onMain: () {
-                context.read<CurrentJobCubit>().steps(jobCard.steps);
-              }));
-        }
-        return GridView.count(
-            controller: ScrollController(),
-            crossAxisCount: 3,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: 2,
-            children: tiles);
-      }),
-    );
+            ),
+          ],
+          child: GridView.count(
+              controller: ScrollController(),
+              crossAxisCount: 3,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 2,
+              children: tiles));
+    });
   }
 }
 
@@ -115,11 +115,11 @@ class Tile extends StatelessWidget {
             onTap: onSecond,
             child: Opacity(
               opacity: 0.5,
-              child: Flexible(
-                child: Text(
-                  body,
-                  style: const TextStyle(fontSize: 12),
-                ),
+              child: Text(
+                body,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 12),
               ),
             ),
           )

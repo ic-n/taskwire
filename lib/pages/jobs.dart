@@ -12,7 +12,7 @@ class PageJobs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      Expanded(
+      Flexible(
         flex: 2,
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -29,7 +29,7 @@ class PageJobs extends StatelessWidget {
           ),
         ),
       ),
-      Expanded(
+      Flexible(
         flex: 1,
         child: Padding(
           padding: const EdgeInsets.all(12),
