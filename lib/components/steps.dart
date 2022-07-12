@@ -24,6 +24,8 @@ class CommandStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var outLines = out.trim().split("\n");
+
     return Step(icon: status ? iconOK : iconContinue, iconClick: fn, progress: progress, lines: 4, children: [
       Text(
         "Running command: $command",
@@ -31,10 +33,34 @@ class CommandStep extends StatelessWidget {
         style: Theme.of(context).textTheme.bodyText1,
       ),
       Padding(
-        padding: const EdgeInsets.all(10),
-        child: Text(
-          "> $out",
-          overflow: TextOverflow.ellipsis,
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Container(
+          constraints: const BoxConstraints(maxHeight: 40 * 3),
+          child: out == ""
+              ? const Opacity(opacity: .4, child: Text("  > ..."))
+              : ListView.builder(
+                  itemCount: outLines.length,
+                  itemBuilder: ((context, index) {
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Opacity(
+                          opacity: .4 + ((index % 2) / 10),
+                          child: Text(
+                            '${index + 1} '.padLeft(4),
+                          ),
+                        ),
+                        Flexible(
+                            child: Opacity(
+                          opacity: .3 + ((index % 2) / 10),
+                          child: Text(
+                            outLines[index],
+                          ),
+                        ))
+                      ],
+                    );
+                  }),
+                ),
         ),
       )
     ]);

@@ -15,19 +15,21 @@ class JobsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: BlocBuilder<JobCardsCubit, List<JobCard>>(builder: (context, state) {
+      child: BlocBuilder<JobCardsCubit, JobCards>(builder: (context, state) {
         var tiles = [
           Tile(
               title: "New task",
               body: "",
               path: "assets/icons/yellow/streamlinehq-interface-add-circle-interface-essential-48.SVG",
-              onClick: () {
-                // context.read<JobCardsCubit>().addNew();
+              onSecond: () {},
+              onMain: () {
+                context.read<CurrentJobCubit>().steps([]);
                 Navigator.push(context,
                     PageTransition<Screen>(type: PageTransitionType.fade, child: const Screen(screen: PageNewTask())));
               }),
         ];
-        for (var jobCard in state) {
+        for (var jobIndex = 0; jobIndex < state.cards.length; jobIndex++) {
+          var jobCard = state.cards[jobIndex];
           String body = "";
           for (var step in jobCard.steps) {
             body += "${step.command}; ";
@@ -36,7 +38,13 @@ class JobsWidget extends StatelessWidget {
               title: jobCard.title,
               body: body,
               path: "assets/icons/yellow/streamlinehq-interface-arrows-right-circle-interface-essential-48.SVG",
-              onClick: () {
+              onSecond: () {
+                context.read<CurrentJobCubit>().steps(jobCard.steps);
+                context.read<JobCardsCubit>().setCurrentEdit(JobCard(jobCard.title, jobCard.steps, jobIndex));
+                Navigator.push(context,
+                    PageTransition<Screen>(type: PageTransitionType.fade, child: const Screen(screen: PageNewTask())));
+              },
+              onMain: () {
                 context.read<CurrentJobCubit>().steps(jobCard.steps);
               }));
         }
@@ -57,13 +65,15 @@ class Tile extends StatelessWidget {
     Key? key,
     required this.title,
     required this.path,
-    required this.onClick,
+    required this.onMain,
+    required this.onSecond,
     required this.body,
   }) : super(key: key);
 
   final String title;
   final String path;
-  final Null Function() onClick;
+  final Null Function() onMain;
+  final Null Function() onSecond;
   final String body;
 
   @override
@@ -81,12 +91,15 @@ class Tile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                title,
-                style: const TextStyle(fontSize: 18),
+              GestureDetector(
+                onTap: onSecond,
+                child: Text(
+                  title,
+                  style: const TextStyle(fontSize: 18),
+                ),
               ),
               TextButton(
-                  onPressed: (onClick),
+                  onPressed: (onMain),
                   style: TextButton.styleFrom(
                       minimumSize: const Size(10, 30),
                       shape: const CircleBorder(),
@@ -98,12 +111,15 @@ class Tile extends StatelessWidget {
                   ))
             ],
           ),
-          Opacity(
-            opacity: 0.5,
-            child: Flexible(
-              child: Text(
-                body,
-                style: const TextStyle(fontSize: 12),
+          GestureDetector(
+            onTap: onSecond,
+            child: Opacity(
+              opacity: 0.5,
+              child: Flexible(
+                child: Text(
+                  body,
+                  style: const TextStyle(fontSize: 12),
+                ),
               ),
             ),
           )

@@ -3,14 +3,41 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class JobCard {
   final String title;
   final List<StepData> steps;
+  final int? jobIndex;
 
-  JobCard(this.title, this.steps);
+  JobCard(this.title, this.steps, [this.jobIndex]);
 }
 
-class JobCardsCubit extends Cubit<List<JobCard>> {
-  JobCardsCubit() : super([]);
+class JobCards {
+  JobCards(this.cards, this.currentEdit);
 
-  void addNew(JobCard newCard) => emit([...state, newCard]);
+  List<JobCard> cards;
+  JobCard currentEdit;
+
+  @override
+  int get hashCode => 0;
+
+  @override
+  bool operator ==(Object other) => false;
+}
+
+class JobCardsCubit extends Cubit<JobCards> {
+  JobCardsCubit() : super(JobCards([], JobCard("", [])));
+
+  void addNew(JobCard newCard) {
+    state.cards.add(newCard);
+    emit(state);
+  }
+
+  void updateCard(JobCard newCard, int index) {
+    state.cards[index] = newCard;
+    emit(state);
+  }
+
+  void setCurrentEdit(JobCard newCard) {
+    state.currentEdit = newCard;
+    emit(state);
+  }
 }
 
 class StepData {
