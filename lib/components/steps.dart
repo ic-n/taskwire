@@ -4,6 +4,12 @@ import 'package:taskwire/assets.dart';
 import 'package:taskwire/colors.dart';
 import 'package:taskwire/components/line.dart';
 
+var startIc = regularSquareRight  ;
+var runningIc = regularSquareDown;
+var doneIc = regularSquareTick;
+
+const cSize = 30.0;
+
 class CommandStep extends StatelessWidget {
   const CommandStep({
     Key? key,
@@ -24,50 +30,54 @@ class CommandStep extends StatelessWidget {
   Widget build(BuildContext context) {
     var outLines = out.trim().split('\n');
 
-    bool x = out == '' || outLines.isEmpty;
+    bool outIsZero = (out == '' || outLines.isEmpty);
+    bool isActive = (!(!status && progress == 0)) && (!(outIsZero && status));
 
     return Step(
-        icon: status ? regularCircleExclamation : regularApps,
+        icon: status ? doneIc : (isActive ? runningIc : startIc),
+        color: status ? refreshing : (isActive ? authority : friendly),
         iconClick: fn,
         progress: progress,
-        lines: x ? 2 : 4,
+        lines: outIsZero ? (isActive ? 2 : 0) : 4,
         children: [
           Text(
-            'Running command: $command',
+            command,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyText1,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Container(
-              constraints: const BoxConstraints(maxHeight: 40 * 3),
-              child: out == '' || outLines.isEmpty
-                  ? Opacity(opacity: .4, child: Text(status ? '  * silence' : '  running...'))
-                  : ListView.builder(
-                      itemCount: outLines.length,
-                      itemBuilder: ((context, index) {
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Opacity(
-                              opacity: .4 + ((index % 2) / 10),
-                              child: Text(
-                                '${index + 1} '.padLeft(4),
+          if (isActive)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Container(
+                constraints: const BoxConstraints(maxHeight: cSize * 3),
+                child: outIsZero
+                    ? Opacity(opacity: .4, child: Text(status ? '  * silence' : '  running...'))
+                    : ListView.builder(
+                        itemCount: outLines.length,
+                        controller: ScrollController(),
+                        itemBuilder: ((context, index) {
+                          return Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Opacity(
+                                opacity: .4 + ((index % 2) / 10),
+                                child: Text(
+                                  '${index + 1} '.padLeft(3),
+                                ),
                               ),
-                            ),
-                            Expanded(
-                                child: Opacity(
-                              opacity: .3 + ((index % 2) / 10),
-                              child: Text(
-                                outLines[index],
-                              ),
-                            ))
-                          ],
-                        );
-                      }),
-                    ),
-            ),
-          )
+                              Expanded(
+                                  child: Opacity(
+                                opacity: .3 + ((index % 2) / 10),
+                                child: Text(
+                                  outLines[index],
+                                ),
+                              ))
+                            ],
+                          );
+                        }),
+                      ),
+              ),
+            )
         ]);
   }
 }
@@ -83,28 +93,17 @@ class EndStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Step(
-        icon: status ? regularCircleExclamation : regularApps,
+        icon: status ? doneIc : startIc,
+        color: status ? refreshing : friendly,
         iconClick: () {},
         progress: 0,
         lines: 0,
         children: [
-          Row(
-            children: [
-              Text(
-                'Finished',
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              if (status)
-                TextButton(
-                    style: TextButton.styleFrom(minimumSize: const Size(10, 30), padding: EdgeInsets.zero),
-                    onPressed: () {},
-                    child: Text(
-                      ', go to server',
-                      style: Theme.of(context).textTheme.bodyText2,
-                    )),
-            ],
-          )
+          Text(
+            'Finished',
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
         ]);
   }
 }
@@ -116,6 +115,7 @@ class Step extends StatelessWidget {
     required this.iconClick,
     required this.progress,
     required this.children,
+    required this.color,
     this.lines = 1,
   }) : super(key: key);
 
@@ -123,22 +123,20 @@ class Step extends StatelessWidget {
   final void Function() iconClick;
   final double progress;
   final List<Widget> children;
+  final Color color;
   final double lines;
 
   @override
   Widget build(BuildContext context) {
-    double wid = MediaQuery.of(context).size.width;
-
-    var body = Container(
-      constraints: BoxConstraints(
-        minHeight: 40,
-        maxWidth: (wid / 3) - 65,
-      ),
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
+    var body = Flexible(
+      child: Container(
+        constraints: BoxConstraints(maxHeight: cSize * (lines + 1) + 4),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
+        ),
       ),
     );
 
@@ -151,12 +149,13 @@ class Step extends StatelessWidget {
             style: TextButton.styleFrom(
                 minimumSize: const Size(10, 30),
                 shape: const CircleBorder(),
+                backgroundColor: Colors.black,
                 padding: EdgeInsets.zero,
                 alignment: Alignment.centerRight),
             child: SvgPicture.asset(
               icon,
-              color: Colors.white,
-              height: 40,
+              color: color,
+              height: cSize,
             )),
       ],
     );
@@ -165,7 +164,7 @@ class Step extends StatelessWidget {
       side = CustomPaint(
         painter: LoadingLine(progress: progress),
         child: SizedBox(
-          height: (40 * lines) + (10 * (lines - 1)),
+          height: cSize * (lines + 1),
           child: button,
         ),
       );
@@ -175,7 +174,6 @@ class Step extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         side,
-        // Tooltip(message:'$progress',child: side),
         body,
       ],
     );

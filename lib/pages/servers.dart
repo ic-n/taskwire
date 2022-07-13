@@ -9,23 +9,21 @@ class PageServers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            PageTitle(title: 'Servers'),
-            SizedBox(
-              height: 12,
-            ),
-            SSHTerm(
-              host: 'localhost',
-              port: 2222,
-              user: 'root',
-              password: 'taskwire',
-            )
-          ],
-        ));
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: const [
+        PageTitle(title: 'Servers'),
+        SizedBox(
+          height: 12,
+        ),
+        SSHTerm(
+          host: 'localhost',
+          port: 2222,
+          user: 'root',
+          password: 'taskwire',
+        )
+      ],
+    );
   }
 }

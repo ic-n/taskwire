@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:taskwire/colors.dart';
+import 'package:taskwire/components/steps.dart';
 
 class LoadingLine extends CustomPainter {
   const LoadingLine({
@@ -19,14 +21,14 @@ class LoadingLine extends CustomPainter {
       canvas.drawLine(Offset.zero, Offset(size.width, size.height), dp);
     }
 
-    const start = Offset(20, 34);
-    double endX = 20;
-    double endY = size.height + 6;
+    const start = Offset(cSize / 2, cSize - 6);
+    double endX = cSize / 2;
+    double endY = size.height + (cSize / 5);
 
     var progressY = start.dy + ((endY - start.dy) * progress) - 2;
 
     var paint = Paint();
-    paint.color = Colors.white.withAlpha(35);
+    paint.color = bg;
     paint.strokeWidth = 5;
     paint.strokeCap = StrokeCap.round;
 
@@ -34,7 +36,7 @@ class LoadingLine extends CustomPainter {
 
     var end = Offset(endX, progressY);
 
-    paint.color = Colors.white.withAlpha(93);
+    paint.color = bgl;
     canvas.drawLine(start, end, paint);
   }
 

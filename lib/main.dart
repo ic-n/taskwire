@@ -30,8 +30,6 @@ class AppWrapper extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           useMaterial3: true,
-          primarySwatch: Colors.grey,
-          cardColor: bg,
           backgroundColor: Colors.black,
           textTheme: const TextTheme(
               bodyText1: TextStyle(color: fg, fontFamily: 'JetBrainsMono'),
@@ -53,10 +51,13 @@ class Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: screen,
+      body: Padding(
+        padding: const EdgeInsets.only(top: 40, left: 40, right: 40),
+        child: screen,
+      ),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
+        decoration: const BoxDecoration(
+          color: bgd,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Row(

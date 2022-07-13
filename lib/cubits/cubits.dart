@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class JobCard {
   final String title;
   final List<StepData> steps;
+  final DateTime touched;
   final int? jobIndex;
 
-  JobCard(this.title, this.steps, [this.jobIndex]);
+  JobCard(this.title, this.steps, this.touched, [this.jobIndex]);
 }
 
 class JobCards {
@@ -22,7 +23,7 @@ class JobCards {
 }
 
 class JobCardsCubit extends Cubit<JobCards> {
-  JobCardsCubit() : super(JobCards([], JobCard('', [])));
+  JobCardsCubit() : super(JobCards([], JobCard('', [], DateTime.now())));
 
   void addNew(JobCard newCard) {
     state.cards.add(newCard);

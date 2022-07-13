@@ -21,28 +21,36 @@ class JobsWidget extends StatelessWidget {
       List<Tile> tiles = [];
       for (var jobIndex = 0; jobIndex < state.cards.length; jobIndex++) {
         var jobCard = state.cards[jobIndex];
-        String body = '';
-        for (var step in jobCard.steps) {
-          body += '${step.command}; ';
-        }
+        var t = jobCard.touched;
         tiles.add(Tile(
-            title: jobCard.title,
-            body: body,
-            path: regularArrowRight,
-            onSecond: () {
-              context.read<CurrentJobCubit>().steps(jobCard.steps);
-              context.read<JobCardsCubit>().setCurrentEdit(JobCard(jobCard.title, jobCard.steps, jobIndex));
-              Navigator.push(context,
-                  PageTransition<Screen>(type: PageTransitionType.fade, child: const Screen(screen: PageNewTask())));
-            },
-            onMain: () {
-              context.read<CurrentJobCubit>().steps(jobCard.steps);
-            }));
+          title: jobCard.title,
+          time: '${t.day}.${t.month} ${t.hour}:${t.minute}',
+          buttons: [
+            TileButton(
+              buttonIcon: regularEdit,
+              action: () {
+                context.read<CurrentJobCubit>().steps(jobCard.steps);
+                context
+                    .read<JobCardsCubit>()
+                    .setCurrentEdit(JobCard(jobCard.title, jobCard.steps, DateTime.now(), jobIndex));
+                Navigator.push(context,
+                    PageTransition<Screen>(type: PageTransitionType.fade, child: const Screen(screen: PageNewTask())));
+              },
+            ),
+            TileButton(
+              buttonIcon: regularArrowRight,
+              action: () {
+                context.read<CurrentJobCubit>().steps(jobCard.steps);
+              },
+            )
+          ],
+        ));
       }
+      var queryData = MediaQuery.of(context);
       return Tools(
           tools: [
             ToolsItem(
-              iconPath: regularPlug,
+              iconPath: regularFilePlus,
               label: 'Add new task',
               onClick: () {
                 context.read<CurrentJobCubit>().steps([]);
@@ -53,7 +61,7 @@ class JobsWidget extends StatelessWidget {
           ],
           child: GridView.count(
               controller: ScrollController(),
-              crossAxisCount: 3,
+              crossAxisCount: ((queryData.size.width - 200) / 600).ceil(),
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
               childAspectRatio: 2,
@@ -66,67 +74,89 @@ class Tile extends StatelessWidget {
   const Tile({
     Key? key,
     required this.title,
-    required this.path,
-    required this.onMain,
-    required this.onSecond,
-    required this.body,
+    required this.time,
+    required this.buttons,
   }) : super(key: key);
 
   final String title;
-  final String path;
-  final Null Function() onMain;
-  final Null Function() onSecond;
-  final String body;
+  final String time;
+  final List<TileButton> buttons;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+    return Container(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        color: bg,
       ),
       margin: EdgeInsets.zero,
       child: Padding(
-        padding: const EdgeInsets.all(24),
-        child:
-            Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: onSecond,
-                child: Text(
-                  title,
-                  style: const TextStyle(fontSize: 18),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 18),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: bgl,
+                    width: 1,
+                    style: BorderStyle.solid,
+                  ),
                 ),
               ),
-              TextButton(
-                  onPressed: (onMain),
-                  style: TextButton.styleFrom(
-                      minimumSize: const Size(10, 30),
-                      shape: const CircleBorder(),
-                      padding: EdgeInsets.zero,
-                      alignment: Alignment.centerRight),
-                  child: SvgPicture.asset(
-                    path,
-                    color: friendly,
-                    height: 40,
-                  ))
-            ],
-          ),
-          GestureDetector(
-            onTap: onSecond,
-            child: Opacity(
-              opacity: 0.5,
-              child: Text(
-                body,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 12),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Row(
+                  children: [
+                    Text(
+                      time,
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: bgxl),
+                    ),
+                    const Spacer(),
+                    ...buttons,
+                  ],
+                ),
               ),
             ),
-          )
-        ]),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TileButton extends StatelessWidget {
+  const TileButton({
+    Key? key,
+    required this.action,
+    required this.buttonIcon,
+  }) : super(key: key);
+
+  final Null Function() action;
+  final String buttonIcon;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: action,
+      style: TextButton.styleFrom(
+          minimumSize: const Size(10, 30),
+          shape: const CircleBorder(),
+          padding: EdgeInsets.zero,
+          alignment: Alignment.centerRight),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10),
+        child: SvgPicture.asset(
+          buttonIcon,
+          color: friendly,
+          height: 20,
+        ),
       ),
     );
   }

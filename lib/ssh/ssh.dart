@@ -135,12 +135,15 @@ class _SSHTermState extends State<SSHTerm> {
               cmd = value;
             });
           },
-          style: const TextStyle(color: Colors.white),
+          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
           enabled: (killer == null),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
               isDense: true,
-              prefixIcon: Text('\$ '),
-              prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+              prefixIcon: Text(
+                '\$ ',
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
               border: InputBorder.none,
               enabledBorder: InputBorder.none),
         ),

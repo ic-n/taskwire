@@ -18,7 +18,10 @@ class JobWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CurrentJobCubit, Job>(builder: (context, state) {
       if (state.steps.isEmpty) {
-        return const Opacity(opacity: 0.5, child: Text('nothing selected'));
+        return const Padding(
+          padding: EdgeInsets.only(top: 12),
+          child: Opacity(opacity: 0.5, child: Text('nothing selected')),
+        );
       }
 
       List<Widget> timeline = [];
@@ -39,7 +42,7 @@ class JobWidget extends StatelessWidget {
       return Tools(
         tools: [
           ToolsItem(
-            iconPath: regularArrowRight,
+            iconPath: regularArrowDoubleRight,
             label: 'Run all',
             onClick: () {
               context.read<CurrentJobCubit>().resetRuns();
@@ -61,6 +64,7 @@ class JobWidget extends StatelessWidget {
         ],
         child: ListView(
           controller: ScrollController(),
+          shrinkWrap: true,
           children: timeline,
         ),
       );

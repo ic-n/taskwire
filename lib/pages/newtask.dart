@@ -15,59 +15,53 @@ class PageNewTask extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(children: [
       Flexible(
-        flex: 2,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const PageTitle(
-                title: 'New task',
-                back: true,
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              BlocBuilder<JobCardsCubit, JobCards>(
-                builder: (context, state) {
-                  String body = '';
-                  for (var element in state.currentEdit.steps) {
-                    body += '${element.command}\n';
-                  }
-                  return NewTaskForm(
-                    state.currentEdit.title,
-                    body,
-                    jobIndex: state.currentEdit.jobIndex,
-                  );
-                },
-              ),
-            ],
-          ),
+        flex: 3,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const PageTitle(
+              title: 'New task',
+              back: true,
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            BlocBuilder<JobCardsCubit, JobCards>(
+              builder: (context, state) {
+                String body = '';
+                for (var element in state.currentEdit.steps) {
+                  body += '${element.command}\n';
+                }
+                return NewTaskForm(
+                  state.currentEdit.title,
+                  body,
+                  jobIndex: state.currentEdit.jobIndex,
+                );
+              },
+            ),
+          ],
         ),
       ),
+      const SizedBox(
+        width: 40,
+      ),
       Flexible(
-        flex: 1,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const PageTitle(title: 'Job'),
-              const SizedBox(
-                height: 12,
+        flex: 2,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const PageTitle(title: 'Job'),
+            JobWidget(
+              backend: SSHBackend(
+                'localhost',
+                2222,
+                'root',
+                'taskwire',
               ),
-              JobWidget(
-                backend: SSHBackend(
-                  'localhost',
-                  2222,
-                  'root',
-                  'taskwire',
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       )
     ]);
@@ -143,9 +137,9 @@ class _NewTaskFormState extends State<NewTaskForm> {
             lable: 'Save',
             callback: () {
               if (jobIndex == null) {
-                context.read<JobCardsCubit>().addNew(JobCard(title, asSteps()));
+                context.read<JobCardsCubit>().addNew(JobCard(title, asSteps(), DateTime.now()));
               } else {
-                context.read<JobCardsCubit>().updateCard(JobCard(title, asSteps()), jobIndex!);
+                context.read<JobCardsCubit>().updateCard(JobCard(title, asSteps(), DateTime.now()), jobIndex!);
               }
               Navigator.pop(context);
             }),
@@ -243,7 +237,7 @@ class _TWFieldState extends State<TWField> {
             enabledBorder: inputBorder(0),
             focusedBorder: inputBorder(2),
             border: inputBorder(0),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            contentPadding: const EdgeInsets.all(20),
             fillColor: bg,
             filled: true,
             hintText: widget.hint,
