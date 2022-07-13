@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:taskwire/assets.dart';
 import 'package:taskwire/backend/backend.dart';
 import 'package:taskwire/components/steps.dart';
 import 'package:taskwire/components/tools.dart';
@@ -17,7 +18,7 @@ class JobWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CurrentJobCubit, Job>(builder: (context, state) {
       if (state.steps.isEmpty) {
-        return const Opacity(opacity: 0.5, child: Text("nothing selected"));
+        return const Opacity(opacity: 0.5, child: Text('nothing selected'));
       }
 
       List<Widget> timeline = [];
@@ -38,8 +39,8 @@ class JobWidget extends StatelessWidget {
       return Tools(
         tools: [
           ToolsItem(
-            iconPath: "assets/icons/yellow/streamlinehq-interface-arrows-right-circle-interface-essential-48.SVG",
-            label: "Run all",
+            iconPath: regularArrowRight,
+            label: 'Run all',
             onClick: () {
               context.read<CurrentJobCubit>().resetRuns();
 

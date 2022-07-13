@@ -20,7 +20,7 @@ class PageTitle extends StatelessWidget {
                 Navigator.pop(context);
               },
               child: Text(
-                "<-- ",
+                '<-- ',
                 style: Theme.of(context).textTheme.bodyText1,
               )),
         Text(

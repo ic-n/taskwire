@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:taskwire/assets.dart';
+import 'package:taskwire/colors.dart';
 import 'package:taskwire/components/line.dart';
-
-const iconOK = "assets/icons/green/streamlinehq-interface-validation-check-circle-interface-essential-48.SVG";
-const iconContinue = "assets/icons/yellow/streamlinehq-interface-arrows-right-circle-interface-essential-48.SVG";
-const iconGo = "assets/icons/yellow/streamlinehq-interface-arrows-right-circle-interface-essential-48.SVG";
 
 class CommandStep extends StatelessWidget {
   const CommandStep({
@@ -24,48 +22,53 @@ class CommandStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var outLines = out.trim().split("\n");
+    var outLines = out.trim().split('\n');
 
-    bool x = out == "" || outLines.isEmpty;
+    bool x = out == '' || outLines.isEmpty;
 
-    return Step(icon: status ? iconOK : iconContinue, iconClick: fn, progress: progress, lines: x ? 2 : 4, children: [
-      Text(
-        "Running command: $command",
-        overflow: TextOverflow.ellipsis,
-        style: Theme.of(context).textTheme.bodyText1,
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Container(
-          constraints: const BoxConstraints(maxHeight: 40 * 3),
-          child: out == "" || outLines.isEmpty
-              ? Opacity(opacity: .4, child: Text(status ? "  * silence" : "  running..."))
-              : ListView.builder(
-                  itemCount: outLines.length,
-                  itemBuilder: ((context, index) {
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Opacity(
-                          opacity: .4 + ((index % 2) / 10),
-                          child: Text(
-                            '${index + 1} '.padLeft(4),
-                          ),
-                        ),
-                        Expanded(
-                            child: Opacity(
-                          opacity: .3 + ((index % 2) / 10),
-                          child: Text(
-                            outLines[index],
-                          ),
-                        ))
-                      ],
-                    );
-                  }),
-                ),
-        ),
-      )
-    ]);
+    return Step(
+        icon: status ? regularCircleExclamation : regularApps,
+        iconClick: fn,
+        progress: progress,
+        lines: x ? 2 : 4,
+        children: [
+          Text(
+            'Running command: $command',
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Container(
+              constraints: const BoxConstraints(maxHeight: 40 * 3),
+              child: out == '' || outLines.isEmpty
+                  ? Opacity(opacity: .4, child: Text(status ? '  * silence' : '  running...'))
+                  : ListView.builder(
+                      itemCount: outLines.length,
+                      itemBuilder: ((context, index) {
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Opacity(
+                              opacity: .4 + ((index % 2) / 10),
+                              child: Text(
+                                '${index + 1} '.padLeft(4),
+                              ),
+                            ),
+                            Expanded(
+                                child: Opacity(
+                              opacity: .3 + ((index % 2) / 10),
+                              child: Text(
+                                outLines[index],
+                              ),
+                            ))
+                          ],
+                        );
+                      }),
+                    ),
+            ),
+          )
+        ]);
   }
 }
 
@@ -79,25 +82,30 @@ class EndStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Step(icon: status ? iconOK : iconContinue, iconClick: () {}, progress: 0, lines: 0, children: [
-      Row(
+    return Step(
+        icon: status ? regularCircleExclamation : regularApps,
+        iconClick: () {},
+        progress: 0,
+        lines: 0,
         children: [
-          Text(
-            "Finished",
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodyText1,
-          ),
-          if (status)
-            TextButton(
-                style: TextButton.styleFrom(minimumSize: const Size(10, 30), padding: EdgeInsets.zero),
-                onPressed: () {},
-                child: Text(
-                  ", go to server",
-                  style: Theme.of(context).textTheme.bodyText2,
-                )),
-        ],
-      )
-    ]);
+          Row(
+            children: [
+              Text(
+                'Finished',
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              if (status)
+                TextButton(
+                    style: TextButton.styleFrom(minimumSize: const Size(10, 30), padding: EdgeInsets.zero),
+                    onPressed: () {},
+                    child: Text(
+                      ', go to server',
+                      style: Theme.of(context).textTheme.bodyText2,
+                    )),
+            ],
+          )
+        ]);
   }
 }
 
@@ -147,6 +155,7 @@ class Step extends StatelessWidget {
                 alignment: Alignment.centerRight),
             child: SvgPicture.asset(
               icon,
+              color: Colors.white,
               height: 40,
             )),
       ],

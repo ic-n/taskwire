@@ -3,6 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:taskwire/assets.dart';
+import 'package:taskwire/colors.dart';
 import 'package:taskwire/components/tools.dart';
 import 'package:taskwire/cubits/cubits.dart';
 import 'package:taskwire/main.dart';
@@ -19,14 +21,14 @@ class JobsWidget extends StatelessWidget {
       List<Tile> tiles = [];
       for (var jobIndex = 0; jobIndex < state.cards.length; jobIndex++) {
         var jobCard = state.cards[jobIndex];
-        String body = "";
+        String body = '';
         for (var step in jobCard.steps) {
-          body += "${step.command}; ";
+          body += '${step.command}; ';
         }
         tiles.add(Tile(
             title: jobCard.title,
             body: body,
-            path: "assets/icons/yellow/streamlinehq-interface-arrows-right-circle-interface-essential-48.SVG",
+            path: regularArrowRight,
             onSecond: () {
               context.read<CurrentJobCubit>().steps(jobCard.steps);
               context.read<JobCardsCubit>().setCurrentEdit(JobCard(jobCard.title, jobCard.steps, jobIndex));
@@ -40,8 +42,8 @@ class JobsWidget extends StatelessWidget {
       return Tools(
           tools: [
             ToolsItem(
-              iconPath: "assets/icons/yellow/streamlinehq-interface-add-circle-interface-essential-48.SVG",
-              label: "Add new task",
+              iconPath: regularPlug,
+              label: 'Add new task',
               onClick: () {
                 context.read<CurrentJobCubit>().steps([]);
                 Navigator.push(context,
@@ -107,6 +109,7 @@ class Tile extends StatelessWidget {
                       alignment: Alignment.centerRight),
                   child: SvgPicture.asset(
                     path,
+                    color: friendly,
                     height: 40,
                   ))
             ],

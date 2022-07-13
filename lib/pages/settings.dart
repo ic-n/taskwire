@@ -11,7 +11,7 @@ class PageSettings extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
-          children: const [PageTitle(title: "Settings")],
+          children: const [PageTitle(title: 'Settings')],
         ));
   }
 }

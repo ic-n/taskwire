@@ -15,15 +15,15 @@ class PageServers extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
-            PageTitle(title: "Servers"),
+            PageTitle(title: 'Servers'),
             SizedBox(
               height: 12,
             ),
             SSHTerm(
-              host: "localhost",
+              host: 'localhost',
               port: 2222,
-              user: "root",
-              password: "taskwire",
+              user: 'root',
+              password: 'taskwire',
             )
           ],
         ));

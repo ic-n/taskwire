@@ -23,7 +23,7 @@ class PageNewTask extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const PageTitle(
-                title: "New task",
+                title: 'New task',
                 back: true,
               ),
               const SizedBox(
@@ -31,9 +31,9 @@ class PageNewTask extends StatelessWidget {
               ),
               BlocBuilder<JobCardsCubit, JobCards>(
                 builder: (context, state) {
-                  String body = "";
+                  String body = '';
                   for (var element in state.currentEdit.steps) {
-                    body += "${element.command}\n";
+                    body += '${element.command}\n';
                   }
                   return NewTaskForm(
                     state.currentEdit.title,
@@ -54,16 +54,16 @@ class PageNewTask extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const PageTitle(title: "Job"),
+              const PageTitle(title: 'Job'),
               const SizedBox(
                 height: 12,
               ),
               JobWidget(
                 backend: SSHBackend(
-                  "localhost",
+                  'localhost',
                   2222,
-                  "root",
-                  "taskwire",
+                  'root',
+                  'taskwire',
                 ),
               ),
             ],
@@ -91,8 +91,8 @@ class NewTaskForm extends StatefulWidget {
 }
 
 class _NewTaskFormState extends State<NewTaskForm> {
-  String title = "";
-  String body = "";
+  String title = '';
+  String body = '';
   int? jobIndex;
 
   @override
@@ -116,8 +116,8 @@ class _NewTaskFormState extends State<NewTaskForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TWField(
-          title: "New task title",
-          hint: "My new task",
+          title: 'New task title',
+          hint: 'My new task',
           initialValue: title,
           callback: (s) {
             setState(() {
@@ -127,8 +127,8 @@ class _NewTaskFormState extends State<NewTaskForm> {
         ),
         smallSpacer,
         TWField(
-          title: "New task comands",
-          hint: "echo hello\napk add python3\npip install pillow\n",
+          title: 'New task comands',
+          hint: 'echo hello\napk add python3\npip install pillow\n',
           initialValue: body,
           callback: (s) {
             setState(() {
@@ -140,7 +140,7 @@ class _NewTaskFormState extends State<NewTaskForm> {
         ),
         spacer,
         TWButton(
-            lable: "Save",
+            lable: 'Save',
             callback: () {
               if (jobIndex == null) {
                 context.read<JobCardsCubit>().addNew(JobCard(title, asSteps()));
@@ -155,7 +155,7 @@ class _NewTaskFormState extends State<NewTaskForm> {
 
   List<StepData> asSteps() {
     List<StepData> steps = [];
-    body.trim().split("\n").forEach((cmd) {
+    body.trim().split('\n').forEach((cmd) {
       steps.add(StepData(command: cmd.trim()));
     });
     return steps;

@@ -32,8 +32,8 @@ class Backend {
       () {
         progressCallback(1);
         t.cancel();
-        String exec = command.split(" ")[0];
-        return "command not found: $exec";
+        String exec = command.split(' ')[0];
+        return 'command not found: $exec';
       },
     );
   }

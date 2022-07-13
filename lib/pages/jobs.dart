@@ -20,7 +20,7 @@ class PageJobs extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
-              PageTitle(title: "Jobs"),
+              PageTitle(title: 'Jobs'),
               SizedBox(
                 height: 12,
               ),
@@ -37,16 +37,16 @@ class PageJobs extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const PageTitle(title: "Job"),
+              const PageTitle(title: 'Job'),
               const SizedBox(
                 height: 12,
               ),
               JobWidget(
                 backend: SSHBackend(
-                  "localhost",
+                  'localhost',
                   2222,
-                  "root",
-                  "taskwire",
+                  'root',
+                  'taskwire',
                 ),
               ),
             ],

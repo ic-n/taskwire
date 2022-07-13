@@ -136,7 +136,7 @@ class LiveTerminalCubit extends Cubit<Term> {
             offset = m.end;
             cur = getColor(m);
           }
-          tokens.add(OutputToken("${line.substring(offset)}\n", cur));
+          tokens.add(OutputToken('${line.substring(offset)}\n', cur));
         });
 
         value.done.then((_) {
@@ -158,7 +158,7 @@ class LiveTerminalCubit extends Cubit<Term> {
   }
 
   Iterable<Match> asciColors(String line) {
-    var re = RegExp(r"(\x9B|\x1B\[)([0-?]*)([ -\/]*)([@-~])", caseSensitive: false, multiLine: false);
+    var re = RegExp(r'(\x9B|\x1B\[)([0-?]*)([ -\/]*)([@-~])', caseSensitive: false, multiLine: false);
     Iterable<Match> matches = re.allMatches(line);
     return matches;
   }

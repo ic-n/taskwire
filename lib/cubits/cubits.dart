@@ -22,7 +22,7 @@ class JobCards {
 }
 
 class JobCardsCubit extends Cubit<JobCards> {
-  JobCardsCubit() : super(JobCards([], JobCard("", [])));
+  JobCardsCubit() : super(JobCards([], JobCard('', [])));
 
   void addNew(JobCard newCard) {
     state.cards.add(newCard);
@@ -43,7 +43,7 @@ class JobCardsCubit extends Cubit<JobCards> {
 class StepData {
   StepData({
     required this.command,
-    this.out = "",
+    this.out = '',
     this.status = false,
     this.progress = 0,
   });
@@ -71,7 +71,7 @@ class CurrentJobCubit extends Cubit<Job> {
     List<StepData> newSteps = [];
     for (var i = 0; i < state.steps.length; i++) {
       var newStep = state.steps[i];
-      newStep.out = "";
+      newStep.out = '';
       newStep.status = false;
       newStep.progress = 0;
       newSteps.add(newStep);
@@ -85,7 +85,7 @@ class CurrentJobCubit extends Cubit<Job> {
     for (var i = 0; i < state.steps.length; i++) {
       if (i == at) {
         var newStep = state.steps[i];
-        newStep.out = "";
+        newStep.out = '';
         newStep.status = false;
         newStep.progress = 0;
         newSteps.add(newStep);

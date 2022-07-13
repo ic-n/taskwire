@@ -62,6 +62,7 @@ class ToolsItem extends StatelessWidget {
             alignment: Alignment.centerRight),
         icon: SvgPicture.asset(
           iconPath,
+          color: friendly,
           height: 20,
         ),
         label: Text(

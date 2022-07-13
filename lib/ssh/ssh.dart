@@ -22,7 +22,7 @@ class SSHTerm extends StatefulWidget {
 }
 
 class _SSHTermState extends State<SSHTerm> {
-  String cmd = "";
+  String cmd = '';
   List<OutputToken> tokens = [];
   void Function()? killer;
 
@@ -97,7 +97,7 @@ class _SSHTermState extends State<SSHTerm> {
                 }),
               ),
               child: Text(
-                "stop it",
+                'stop it',
                 style: Theme.of(context).textTheme.bodyText2?.merge(const TextStyle(color: Colors.black)),
               ),
             )
@@ -139,7 +139,7 @@ class _SSHTermState extends State<SSHTerm> {
           enabled: (killer == null),
           decoration: const InputDecoration(
               isDense: true,
-              prefixIcon: Text("\$ "),
+              prefixIcon: Text('\$ '),
               prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
               border: InputBorder.none,
               enabledBorder: InputBorder.none),
