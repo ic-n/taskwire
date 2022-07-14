@@ -9,7 +9,7 @@ class Tools extends StatelessWidget {
     required this.child,
   }) : super(key: key);
 
-  final List<ToolsItem> tools;
+  final List<Widget> tools;
   final Widget child;
 
   @override
@@ -23,13 +23,10 @@ class Tools extends StatelessWidget {
                 bottom: BorderSide(width: 1, color: bg),
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: tools,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: tools,
             ),
           ),
           const SizedBox(
@@ -49,17 +46,19 @@ class ToolsItem extends StatelessWidget {
     Key? key,
     required this.iconPath,
     required this.label,
+    required this.color,
     required this.onClick,
   }) : super(key: key);
 
   final String iconPath;
   final String label;
+  final Color color;
   final Null Function() onClick;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 10),
+      padding: const EdgeInsets.only(right: 22, top: 12, bottom: 12, left: 12),
       child: TextButton.icon(
         onPressed: onClick,
         style: TextButton.styleFrom(
@@ -69,12 +68,12 @@ class ToolsItem extends StatelessWidget {
             alignment: Alignment.centerRight),
         icon: SvgPicture.asset(
           iconPath,
-          color: friendly,
+          color: color,
           height: 20,
         ),
         label: Text(
           label,
-          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: friendly),
+          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: color),
         ),
       ),
     );

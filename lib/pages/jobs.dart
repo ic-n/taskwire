@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:taskwire/backend/backend.dart';
 import 'package:taskwire/components/job.dart';
 import 'package:taskwire/components/jobs.dart';
 import 'package:taskwire/components/title.dart';
@@ -31,16 +30,9 @@ class PageJobs extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const PageTitle(title: 'Job'),
-            JobWidget(
-              backend: SSHBackend(
-                'localhost',
-                2222,
-                'root',
-                'taskwire',
-              ),
-            ),
+          children: const [
+            PageTitle(title: 'Job'),
+            JobWidget(),
           ],
         ),
       )

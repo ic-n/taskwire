@@ -4,7 +4,7 @@ import 'package:taskwire/assets.dart';
 import 'package:taskwire/colors.dart';
 import 'package:taskwire/components/line.dart';
 
-var startIc = regularSquareRight  ;
+var startIc = regularSquareRight;
 var runningIc = regularSquareDown;
 var doneIc = regularSquareTick;
 

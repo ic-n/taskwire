@@ -148,11 +148,9 @@ class _SSHTermState extends State<SSHTerm> {
               enabledBorder: InputBorder.none),
         ),
       ));
-      return Expanded(
-        child: ListView(
-          controller: _controller,
-          children: lines,
-        ),
+      return ListView(
+        controller: _controller,
+        children: lines,
       );
     });
   }

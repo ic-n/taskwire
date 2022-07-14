@@ -116,3 +116,68 @@ class CurrentJobCubit extends Cubit<Job> {
     emit(state);
   }
 }
+
+class Machine {
+  final String name;
+  final String host;
+  final int port;
+  final String user;
+  final String password;
+
+  Machine(this.name, this.host, this.port, this.user, this.password);
+}
+
+class Machines {
+  List<Machine> machines = [];
+  int selected = -1;
+
+  @override
+  int get hashCode => 0;
+
+  @override
+  bool operator ==(Object other) => false;
+}
+
+class MachinesCubit extends Cubit<Machines> {
+  MachinesCubit() : super(Machines());
+
+  void openTerm(int id) {
+    state.selected = id;
+    emit(state);
+  }
+
+  void closeTerm() {
+    state.selected = -1;
+    emit(state);
+  }
+
+  void addMachine(Machine newMach) {
+    state.machines.add(newMach);
+    emit(state);
+  }
+
+  void removeMachine(int at) {
+    List<Machine> newMachines = [];
+    for (var i = 0; i < state.machines.length; i++) {
+      if (i == at) {
+        continue;
+      }
+      newMachines.add(state.machines[i]);
+    }
+    state.machines = newMachines;
+    emit(state);
+  }
+
+  void updateMachine(int at, Machine newMachine) {
+    List<Machine> newMachines = [];
+    for (var i = 0; i < state.machines.length; i++) {
+      if (i == at) {
+        newMachines.add(newMachine);
+        continue;
+      }
+      newMachines.add(state.machines[i]);
+    }
+    state.machines = newMachines;
+    emit(state);
+  }
+}

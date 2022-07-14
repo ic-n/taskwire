@@ -27,6 +27,7 @@ class JobsWidget extends StatelessWidget {
           time: '${t.day}.${t.month} ${t.hour}:${t.minute}',
           buttons: [
             TileButton(
+              color: friendly,
               buttonIcon: regularEdit,
               action: () {
                 context.read<CurrentJobCubit>().steps(jobCard.steps);
@@ -38,6 +39,7 @@ class JobsWidget extends StatelessWidget {
               },
             ),
             TileButton(
+              color: friendly,
               buttonIcon: regularArrowRight,
               action: () {
                 context.read<CurrentJobCubit>().steps(jobCard.steps);
@@ -50,6 +52,7 @@ class JobsWidget extends StatelessWidget {
       return Tools(
           tools: [
             ToolsItem(
+              color: friendly,
               iconPath: regularFilePlus,
               label: 'Add new task',
               onClick: () {
@@ -136,10 +139,12 @@ class TileButton extends StatelessWidget {
     Key? key,
     required this.action,
     required this.buttonIcon,
+    required this.color,
   }) : super(key: key);
 
   final Null Function() action;
   final String buttonIcon;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +159,7 @@ class TileButton extends StatelessWidget {
         padding: const EdgeInsets.only(left: 10),
         child: SvgPicture.asset(
           buttonIcon,
-          color: friendly,
+          color: color,
           height: 20,
         ),
       ),
