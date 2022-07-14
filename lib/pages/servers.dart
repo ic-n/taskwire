@@ -69,35 +69,37 @@ class ServersBody extends StatelessWidget {
                   margin: const EdgeInsets.only(bottom: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Flexible(flex: 1, child: Text(state.machines[index].name)),
-                      Flexible(
-                          flex: 1,
+                      Expanded(
+                        child: Text(state.machines[index].name),
+                      ),
+                      Expanded(
                           child: Text(
-                            '${state.machines[index].host}:${state.machines[index].port}',
-                          )),
-                      Flexible(
-                          flex: 1,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              TileButton(
-                                color: authority,
-                                action: () {
-                                  context.read<MachinesCubit>().removeMachine(index);
-                                },
-                                buttonIcon: regularTrash,
-                              ),
-                              TileButton(
-                                color: authority,
-                                action: () {
-                                  context.read<MachinesCubit>().openTerm(index);
-                                },
-                                buttonIcon: regularWindowTerninal,
-                              ),
-                            ],
-                          )),
+                        '${state.machines[index].host}:${state.machines[index].port}',
+                      )),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TileButton(
+                              color: authority,
+                              action: () {
+                                context.read<MachinesCubit>().removeMachine(index);
+                              },
+                              buttonIcon: regularTrash,
+                            ),
+                            TileButton(
+                              color: authority,
+                              action: () {
+                                context.read<MachinesCubit>().openTerm(index);
+                              },
+                              buttonIcon: regularWindowTerninal,
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 );

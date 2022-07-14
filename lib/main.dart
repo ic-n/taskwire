@@ -7,7 +7,6 @@ import 'package:taskwire/cubits/cubits.dart';
 import 'package:taskwire/cubits/liveterm.dart';
 import 'package:taskwire/pages/jobs.dart';
 import 'package:taskwire/pages/servers.dart';
-import 'package:taskwire/pages/settings.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
@@ -31,6 +30,25 @@ class AppWrapper extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+          splashFactory: NoSplash.splashFactory,
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          buttonTheme: const ButtonThemeData(
+            alignedDropdown: true,
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.transparent),
+              overlayColor: MaterialStateProperty.all(Colors.transparent),
+              foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+                if (states.contains(MaterialState.hovered)) {
+                  return fgl;
+                }
+                return fg;
+              }),
+              splashFactory: NoSplash.splashFactory,
+            ),
+          ),
           useMaterial3: true,
           backgroundColor: Colors.black,
           textTheme: const TextTheme(
@@ -84,15 +102,15 @@ class Screen extends StatelessWidget {
                             type: PageTransitionType.fade, child: const Screen(screen: PageServers())));
                   },
                 ),
-                BarButton(
-                  title: 'settings',
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        PageTransition<Screen>(
-                            type: PageTransitionType.fade, child: const Screen(screen: PageSettings())));
-                  },
-                ),
+                // BarButton(
+                //   title: 'settings',
+                //   onPressed: () {
+                //     Navigator.push(
+                //         context,
+                //         PageTransition<Screen>(
+                //             type: PageTransitionType.fade, child: const Screen(screen: PageSettings())));
+                //   },
+                // ),
                 TextButton(
                   onPressed: () {
                     launchUrl(Uri.parse('https://www.buymeacoffee.com/taskwire'));
@@ -136,14 +154,6 @@ class BarButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onPressed,
-      style: ButtonStyle(
-        foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.hovered)) {
-            return fgl;
-          }
-          return fg;
-        }),
-      ),
       child: Text(
         title,
         style: Theme.of(context).textTheme.bodyText2,

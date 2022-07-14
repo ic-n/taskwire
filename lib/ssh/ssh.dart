@@ -89,12 +89,7 @@ class _SSHTermState extends State<SSHTerm> {
             TextButton(
               onPressed: killer,
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-                  if (states.contains(MaterialState.hovered)) {
-                    return Colors.white;
-                  }
-                  return Colors.white.withAlpha(50);
-                }),
+                backgroundColor: MaterialStateProperty.all(Colors.white),
               ),
               child: Text(
                 'stop it',
