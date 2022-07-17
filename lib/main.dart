@@ -1,6 +1,9 @@
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:taskwire/colors.dart';
 import 'package:taskwire/cubits/cubits.dart';
@@ -9,8 +12,10 @@ import 'package:taskwire/pages/jobs.dart';
 import 'package:taskwire/pages/servers.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-void main() {
-  runApp(MultiBlocProvider(
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  var app = MultiBlocProvider(
     providers: [
       BlocProvider<JobCardsCubit>(create: (context) => JobCardsCubit()),
       BlocProvider<CurrentJobCubit>(create: (context) => CurrentJobCubit()),
@@ -18,7 +23,16 @@ void main() {
       BlocProvider<MachinesCubit>(create: (context) => MachinesCubit()),
     ],
     child: const AppWrapper(),
-  ));
+  );
+
+  var storage = await HydratedStorage.build(
+    storageDirectory: await getApplicationSupportDirectory(),
+  );
+
+  HydratedBlocOverrides.runZoned(
+    () => runApp(app),
+    storage: storage,
+  );
 }
 
 class AppWrapper extends StatelessWidget {

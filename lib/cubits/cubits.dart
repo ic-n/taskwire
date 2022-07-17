@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class JobCard {
   final String title;
@@ -22,8 +23,44 @@ class JobCards {
   bool operator ==(Object other) => false;
 }
 
-class JobCardsCubit extends Cubit<JobCards> {
+class JobCardsCubit extends HydratedCubit<JobCards> {
   JobCardsCubit() : super(JobCards([], JobCard('', [], DateTime.now())));
+
+  @override
+  Map<String, dynamic>? toJson(JobCards state) {
+    List<Map<String, dynamic>> cards = [];
+    for (var card in state.cards) {
+      List<Map<String, dynamic>> steps = [];
+      for (var step in card.steps) {
+        steps.add({"command": step.command});
+      }
+      cards.add({
+        "title": card.title,
+        "touched": card.touched.toIso8601String(),
+        "steps": steps,
+      });
+    }
+    return {"cards": cards};
+  }
+
+  @override
+  JobCards? fromJson(Map<String, dynamic> json) {
+    List<JobCard> cards = [];
+    for (var cardData in json["cards"] as List<dynamic>) {
+      var card = cardData as Map<String, dynamic>;
+      List<StepData> steps = [];
+      for (var stepData in card["steps"] as List<dynamic>) {
+        var step = stepData as Map<String, dynamic>;
+        steps.add(StepData(command: step["command"] as String));
+      }
+      cards.add(JobCard(
+        card["title"] as String,
+        steps,
+        DateTime.parse(card["touched"] as String),
+      ));
+    }
+    return JobCards(cards, JobCard('', [], DateTime.now()));
+  }
 
   void addNew(JobCard newCard) {
     state.cards.add(newCard);
@@ -138,8 +175,41 @@ class Machines {
   bool operator ==(Object other) => false;
 }
 
-class MachinesCubit extends Cubit<Machines> {
+class MachinesCubit extends HydratedCubit<Machines> {
   MachinesCubit() : super(Machines());
+
+  @override
+  Map<String, dynamic>? toJson(Machines state) {
+    List<Map<String, dynamic>> machines = [];
+    for (var machine in state.machines) {
+      machines.add({
+        "name": machine.name,
+        "host": machine.host,
+        "port": machine.port,
+        "user": machine.user,
+        "password": machine.password,
+      });
+    }
+    return {
+      "machines": machines,
+    };
+  }
+
+  @override
+  Machines? fromJson(Map<String, dynamic> json) {
+    var machines = Machines();
+    for (var machineData in json["machines"] as List<dynamic>) {
+      var machine = machineData as Map<String, dynamic>;
+      machines.machines.add(Machine(
+        machine["name"] as String,
+        machine["host"] as String,
+        machine["port"] as int,
+        machine["user"] as String,
+        machine["password"] as String,
+      ));
+    }
+    return machines;
+  }
 
   void openTerm(int id) {
     state.selected = id;
