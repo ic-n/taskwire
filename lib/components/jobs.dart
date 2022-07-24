@@ -22,8 +22,20 @@ class JobsWidget extends StatelessWidget {
       for (var jobIndex = 0; jobIndex < state.cards.length; jobIndex++) {
         var jobCard = state.cards[jobIndex];
         var t = jobCard.touched;
+
+        List<String> lines = [];
+        for (var step in jobCard.steps) {
+          String command = step.command.trim();
+          if (command != "") {
+            lines.add('-> $command');
+          }
+        }
+
+        print(lines);
+
         tiles.add(Tile(
           title: jobCard.title,
+          body: lines.join("\n"),
           time: '${t.day}.${t.month} ${t.hour}:${t.minute}',
           buttons: [
             TileButton(
@@ -77,11 +89,13 @@ class Tile extends StatelessWidget {
   const Tile({
     Key? key,
     required this.title,
+    required this.body,
     required this.time,
     required this.buttons,
   }) : super(key: key);
 
   final String title;
+  final String body;
   final String time;
   final List<TileButton> buttons;
 
@@ -99,9 +113,47 @@ class Tile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: const TextStyle(fontSize: 18),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        Text(
+                          body,
+                          style: const TextStyle(fontSize: 8, color: fgl),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              stops: const [
+                                0,
+                                0.8,
+                                1,
+                              ],
+                              colors: [
+                                bg.withAlpha(0),
+                                bg.withAlpha(100),
+                                bg,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
             Container(
               decoration: const BoxDecoration(

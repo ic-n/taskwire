@@ -68,7 +68,7 @@ class AppWrapper extends StatelessWidget {
           textTheme: const TextTheme(
               bodyText1: TextStyle(color: fg, fontFamily: 'JetBrainsMono'),
               bodyText2: TextStyle(color: fgl, fontFamily: 'JetBrainsMono'))),
-      home: const Screen(screen: PageServers()),
+      home: const Screen(screen: PageJobs()),
     );
   }
 }
