@@ -1,4 +1,3 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class JobCard {
@@ -93,6 +92,7 @@ class StepData {
 }
 
 class Job {
+  bool startNow = false;
   List<StepData> steps = [];
 
   @override
@@ -150,6 +150,11 @@ class CurrentJobCubit extends Cubit<Job> {
 
   void steps(List<StepData> newSteps) {
     state.steps = newSteps;
+    emit(state);
+  }
+
+  void mustRun([bool? must]) {
+    state.startNow = must ?? true;
     emit(state);
   }
 }

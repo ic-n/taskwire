@@ -31,8 +31,6 @@ class JobsWidget extends StatelessWidget {
           }
         }
 
-        print(lines);
-
         tiles.add(Tile(
           title: jobCard.title,
           body: lines.join("\n"),
@@ -55,6 +53,7 @@ class JobsWidget extends StatelessWidget {
               buttonIcon: regularArrowRight,
               action: () {
                 context.read<CurrentJobCubit>().steps(jobCard.steps);
+                context.read<CurrentJobCubit>().mustRun();
               },
             )
           ],

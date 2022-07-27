@@ -25,6 +25,8 @@ class _JobWidgetState extends State<JobWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<MachinesCubit, Machines>(
       builder: (machinesContext, machinesState) {
+        var defaultMachine = machinesState.machines.isNotEmpty ? machinesState.machines.last : null;
+
         return BlocBuilder<CurrentJobCubit, Job>(builder: (currentJobContext, currentJobState) {
           if (currentJobState.steps.isEmpty) {
             return const Padding(
@@ -50,33 +52,17 @@ class _JobWidgetState extends State<JobWidget> {
 
           timeline.add(EndStep(status: currentJobState.steps[currentJobState.steps.length - 1].status));
 
-          var defaultMachine = machinesState.machines.isNotEmpty ? machinesState.machines.last : null;
+          if (currentJobState.startNow) {
+            runAll(backend, currentJobContext, currentJobState, defaultMachine)();
+          }
+
           return Tools(
             tools: [
               ToolsItem(
                 iconPath: regularArrowDoubleRight,
                 color: friendly,
                 label: 'Run all',
-                onClick: () {
-                  if (backend == null) {
-                    return;
-                  }
-
-                  currentJobContext.read<CurrentJobCubit>().resetRuns();
-
-                  int stepIndex = 0;
-                  void Function()? recursiveRun;
-
-                  recursiveRun = () {
-                    if (stepIndex >= currentJobState.steps.length) {
-                      return;
-                    }
-                    runStepCommand(currentJobContext, backend!, currentJobState.steps, stepIndex, recursiveRun);
-                    stepIndex++;
-                  };
-
-                  recursiveRun();
-                },
+                onClick: runAll(backend, currentJobContext, currentJobState, defaultMachine),
               ),
               const Spacer(),
               Container(
@@ -133,6 +119,39 @@ class _JobWidgetState extends State<JobWidget> {
         });
       },
     );
+  }
+
+  Null Function() runAll(
+      SSHBackend? backend, BuildContext currentJobContext, Job currentJobState, Machine? defaultMachine) {
+    return () {
+      if (backend == null) {
+        return;
+      }
+
+      if (selected == null) {
+        if (defaultMachine == null) {
+          setState(() {
+            selected = defaultMachine;
+          });
+        }
+      }
+
+      currentJobContext.read<CurrentJobCubit>().resetRuns();
+      currentJobContext.read<CurrentJobCubit>().mustRun(false);
+
+      int stepIndex = 0;
+      void Function()? recursiveRun;
+
+      recursiveRun = () {
+        if (stepIndex >= currentJobState.steps.length) {
+          return;
+        }
+        runStepCommand(currentJobContext, backend, currentJobState.steps, stepIndex, recursiveRun);
+        stepIndex++;
+      };
+
+      recursiveRun();
+    };
   }
 
   void runStepCommand(BuildContext context, Backend backend, List<StepData> steps, int stepIndex,

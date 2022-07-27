@@ -93,7 +93,7 @@ class LiveTerminalCubit extends Cubit<Term> {
 
   void connect(String host, int port, String user, String password) {
     if (client == null) {
-      connectClient(host, port, user, password).then((c) => client = c);
+      connectClientWithPassword(host, port, user, password).then((c) => client = c);
     }
   }
 

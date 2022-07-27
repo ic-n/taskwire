@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
+import 'package:dartssh2/dartssh2.dart';
 import 'package:taskwire/ssh/connector.dart';
 
 class Backend {
@@ -51,7 +52,14 @@ class SSHBackend extends Backend {
   Future<String> sendCommand(String command, void Function(double) progressCallback) async {
     var t = Timer.periodic(const Duration(milliseconds: 10), progressFunc(progressCallback));
 
-    var client = await connectClient(host, port, user, password);
+    SSHClient? client;
+
+    try {
+      client = await connectClientWithPassword(host, port, user, password);
+    } on Exception catch (e) {
+      return "connection issue ${e.toString()}";
+    }
+
     var p = await client.run(command);
 
     progressCallback(1);
