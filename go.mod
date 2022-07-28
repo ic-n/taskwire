@@ -2,7 +2,10 @@ module taskwire
 
 go 1.18
 
-require mvdan.cc/sh/v3 v3.5.1
+require (
+	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
+	mvdan.cc/sh/v3 v3.5.1
+)
 
 require (
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
