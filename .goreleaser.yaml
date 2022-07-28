@@ -1,0 +1,35 @@
+before:
+  hooks:
+    - go mod tidy
+    - go generate ./...
+dist: keyexchange
+builds:
+  - dir: cmd
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - "darwin"
+      - "dragonfly"
+      - "freebsd"
+      - "illumos"
+      - "linux"
+      - "netbsd"
+      - "openbsd"
+      - "solaris"
+      - "windows"
+    goarch:
+      - "amd64"
+      - "386"
+      - "arm"
+      - "arm64"
+      - "ppc64le"
+      - "ppc64"
+      - "mips64le"
+      - "mips64"
+      - "mipsle"
+      - "mips"
+      - "s390x"
+checksum:
+  name_template: "checksums.txt"
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"

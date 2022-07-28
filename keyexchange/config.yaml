@@ -1,0 +1,152 @@
+project_name: taskwire
+release:
+  github:
+    owner: ivdur
+    name: taskwire
+  name_template: '{{.Tag}}'
+scoop:
+  name: taskwire
+  commit_author:
+    name: goreleaserbot
+    email: bot@goreleaser.com
+  commit_msg_template: Scoop update for {{ .ProjectName }} version {{ .Tag }}
+  goamd64: v1
+builds:
+  - id: taskwire
+    goos:
+      - darwin
+      - dragonfly
+      - freebsd
+      - illumos
+      - linux
+      - netbsd
+      - openbsd
+      - solaris
+      - windows
+    goarch:
+      - amd64
+      - "386"
+      - arm
+      - arm64
+      - ppc64le
+      - ppc64
+      - mips64le
+      - mips64
+      - mipsle
+      - mips
+      - s390x
+    goarm:
+      - "6"
+    gomips:
+      - hardfloat
+    goamd64:
+      - v1
+    targets:
+      - darwin_amd64_v1
+      - darwin_arm64
+      - dragonfly_amd64_v1
+      - freebsd_amd64_v1
+      - freebsd_386
+      - freebsd_arm_6
+      - freebsd_arm64
+      - illumos_amd64_v1
+      - linux_amd64_v1
+      - linux_386
+      - linux_arm_6
+      - linux_arm64
+      - linux_ppc64le
+      - linux_ppc64
+      - linux_mips64le_hardfloat
+      - linux_mips64_hardfloat
+      - linux_mipsle_hardfloat
+      - linux_mips_hardfloat
+      - linux_s390x
+      - netbsd_amd64_v1
+      - netbsd_386
+      - netbsd_arm_6
+      - openbsd_amd64_v1
+      - openbsd_386
+      - openbsd_arm_6
+      - openbsd_arm64
+      - solaris_amd64_v1
+      - windows_amd64_v1
+      - windows_386
+      - windows_arm_6
+      - windows_arm64
+    dir: cmd
+    main: .
+    binary: taskwire
+    builder: go
+    gobinary: go
+    command: build
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser
+    env:
+      - CGO_ENABLED=0
+archives:
+  - id: default
+    name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
+    format: tar.gz
+    files:
+      - src: license*
+      - src: LICENSE*
+      - src: readme*
+      - src: README*
+      - src: changelog*
+      - src: CHANGELOG*
+snapshot:
+  name_template: '{{ incpatch .Version }}-next'
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+dist: keyexchange
+env_files:
+  github_token: ~/.config/goreleaser/github_token
+  gitlab_token: ~/.config/goreleaser/gitlab_token
+  gitea_token: ~/.config/goreleaser/gitea_token
+before:
+  hooks:
+    - go mod tidy
+    - go generate ./...
+source:
+  name_template: '{{ .ProjectName }}-{{ .Version }}'
+  format: tar.gz
+gomod:
+  gobinary: go
+announce:
+  twitter:
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+  reddit:
+    title_template: '{{ .ProjectName }} {{ .Tag }} is out!'
+    url_template: '{{ .ReleaseURL }}'
+  slack:
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+    username: GoReleaser
+  discord:
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+    author: GoReleaser
+    color: "3888754"
+    icon_url: https://goreleaser.com/static/avatar.png
+  teams:
+    title_template: '{{ .ProjectName }} {{ .Tag }} is out!'
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+    color: '#2D313E'
+    icon_url: https://goreleaser.com/static/avatar.png
+  smtp:
+    subject_template: '{{ .ProjectName }} {{ .Tag }} is out!'
+    body_template: 'You can view details from: {{ .ReleaseURL }}'
+  mattermost:
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+    title_template: '{{ .ProjectName }} {{ .Tag }} is out!'
+    username: GoReleaser
+  linkedin:
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+  telegram:
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+  webhook:
+    message_template: '{ "message": "{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}"}'
+    content_type: application/json; charset=utf-8
+github_urls:
+  download: https://github.com
+gitlab_urls:
+  download: https://gitlab.com

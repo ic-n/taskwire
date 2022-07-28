@@ -17,3 +17,8 @@ tasks:
         ignore_error: true
       - cmd: podman build --build-arg PASSWORD=taskwire -t sshdummy -f test/ssh/Dockerfile .
       - cmd: podman run --name sshdummy -d -p 2222:22 sshdummy
+  
+  buildgo:
+    cmds:
+      - rm -fr keyexchange
+      - goreleaser build --snapshot
