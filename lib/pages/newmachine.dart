@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taskwire/backend/backend.dart';
 import 'package:taskwire/colors.dart';
 import 'package:taskwire/components/title.dart';
 import 'package:taskwire/components/twforms.dart';
@@ -49,10 +50,12 @@ class _NewMachineFormState extends State<NewMachineForm> {
   int port = 22;
   String user = "";
   String password = "";
+  String key = "";
 
   @override
   Widget build(BuildContext context) {
     var spacer = const SizedBox(
+      width: 25,
       height: 25,
     );
     var smallSpacer = const SizedBox(
@@ -120,15 +123,54 @@ class _NewMachineFormState extends State<NewMachineForm> {
           },
         ),
         spacer,
-        TWButton(
-            lable: 'Save',
-            color: intelegence,
-            callback: () {
-              context.read<MachinesCubit>().addMachine(
-                    Machine(name, host, port, user, password),
-                  );
-              Navigator.pop(context);
-            }),
+        Row(
+          children: [
+            TWButton(
+              lable: 'Save',
+              color: intelegence,
+              callback: () {
+                context.read<MachinesCubit>().addMachine(
+                      Machine(name, host, port, user, password),
+                    );
+                Navigator.pop(context);
+              },
+            ),
+            spacer,
+            TWButton(
+              lable: 'RSA key exchange',
+              color: intelegence,
+              callback: () async {
+                // context.read<MachinesCubit>().addMachine(
+                //       Machine(name, host, port, user, password),
+                //     );
+                var backend = SSHBackend(
+                  host,
+                  port,
+                  user,
+                  password,
+                );
+                final privKey = await backend.keyExchange();
+                setState(() {
+                  key = privKey;
+                });
+                // Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+        spacer,
+        Container(
+          constraints: const BoxConstraints(
+            maxHeight: 120,
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Text(key),
+            ),
+          ),
+        ),
       ],
     );
   }

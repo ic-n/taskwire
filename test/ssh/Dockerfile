@@ -12,5 +12,12 @@ RUN /usr/bin/ssh-keygen -A
 RUN ssh-keygen -t rsa -b 4096 -f  /etc/ssh/ssh_host_key
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
+
+RUN mkdir ~/.ssh
+RUN chmod 700 ~/.ssh
+RUN touch ~/.ssh/authorized_keys
+RUN chmod 600 ~/.ssh/authorized_keys
+
 EXPOSE 22
+
 CMD ["/usr/sbin/sshd", "-D"]

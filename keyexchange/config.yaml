@@ -28,13 +28,6 @@ builds:
       - "386"
       - arm
       - arm64
-      - ppc64le
-      - ppc64
-      - mips64le
-      - mips64
-      - mipsle
-      - mips
-      - s390x
     goarm:
       - "6"
     gomips:
@@ -54,13 +47,6 @@ builds:
       - linux_386
       - linux_arm_6
       - linux_arm64
-      - linux_ppc64le
-      - linux_ppc64
-      - linux_mips64le_hardfloat
-      - linux_mips64_hardfloat
-      - linux_mipsle_hardfloat
-      - linux_mips_hardfloat
-      - linux_s390x
       - netbsd_amd64_v1
       - netbsd_386
       - netbsd_arm_6

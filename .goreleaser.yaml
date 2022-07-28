@@ -22,13 +22,6 @@ builds:
       - "386"
       - "arm"
       - "arm64"
-      - "ppc64le"
-      - "ppc64"
-      - "mips64le"
-      - "mips64"
-      - "mipsle"
-      - "mips"
-      - "s390x"
 checksum:
   name_template: "checksums.txt"
 snapshot:
