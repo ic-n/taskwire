@@ -45,11 +45,11 @@ class NewMachineForm extends StatefulWidget {
 }
 
 class _NewMachineFormState extends State<NewMachineForm> {
-  String name = '';
-  String host = '';
-  int port = 22;
-  String user = '';
-  String password = '';
+  String name = 'Test';
+  String host = 'localhost';
+  int port = 2222;
+  String user = 'root';
+  String password = 'taskwire';
   String rsa = '';
 
   @override
@@ -136,24 +136,28 @@ class _NewMachineFormState extends State<NewMachineForm> {
               },
             ),
             spacer,
-            TWButton(
-              lable: 'RSA key exchange',
-              color: intelegence,
-              callback: () async {
-                // context.read<MachinesCubit>().addMachine(
-                //       Machine(name, host, port, user, password),
-                //     );
-                var backend = SSHBackend(
-                  host,
-                  port,
-                  user,
-                  password,
+            BlocBuilder<PasscodeCubit, Passcode>(
+              builder: (context, state) {
+                return TWButton(
+                  lable: 'RSA key exchange ${state.passcode}, ${state.passcodeHash}',
+                  color: intelegence,
+                  callback: () async {
+                    if (state.passcode == null) {
+                      return;
+                    }
+                    var backend = SSHBackend(
+                      host,
+                      port,
+                      user,
+                      password,
+                    );
+                    final privKey = await backend.keyExchange(state.passcode!);
+                    setState(() {
+                      rsa = privKey;
+                    });
+                    // Navigator.pop(context);
+                  },
                 );
-                final privKey = await backend.keyExchange();
-                setState(() {
-                  rsa = privKey;
-                });
-                // Navigator.pop(context);
               },
             ),
           ],

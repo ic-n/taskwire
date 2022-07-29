@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class JobCard {
@@ -257,5 +260,54 @@ class MachinesCubit extends HydratedCubit<Machines> {
     }
     state.machines = newMachines;
     emit(state);
+  }
+}
+
+class Passcode {
+  String? passcode;
+  String passcodeHash;
+
+  Passcode({this.passcode, required this.passcodeHash});
+}
+
+class PasscodeCubit extends HydratedCubit<Passcode> {
+  PasscodeCubit() : super(Passcode(passcodeHash: '<invalid>'));
+
+  @override
+  Map<String, dynamic>? toJson(Passcode state) {
+    return {
+      'passcodeHash': state.passcodeHash,
+    };
+  }
+
+  @override
+  Passcode? fromJson(Map<String, dynamic> json) {
+    return Passcode(passcodeHash: json['passcodeHash'] as String);
+  }
+
+  String hashPasscode(String code) {
+    var bytes = utf8.encode(code);
+    var digest = sha512.convert(bytes);
+    var encoded = base64Encode(digest.bytes);
+    return encoded;
+  }
+
+  bool checkPasscode(String code) => state.passcodeHash == hashPasscode(code);
+
+  bool appHasPasscode() => state.passcodeHash != '<invalid>';
+
+  void newPasscode(String code) {
+    state.passcode = code;
+    state.passcodeHash = hashPasscode(code);
+    emit(state);
+  }
+
+  bool savePasscode(String code) {
+    if (checkPasscode(code)) {
+      state.passcode = code;
+      emit(state);
+      return true;
+    }
+    return false;
   }
 }

@@ -23,9 +23,6 @@ class PageServers extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: const [
         PageTitle(title: 'Servers'),
-        SizedBox(
-          height: 12,
-        ),
         Expanded(child: ServersBody())
       ],
     );
@@ -115,9 +112,12 @@ class ServersBody extends StatelessWidget {
                   ),
                 ),
                 child: Stack(children: [
-                  SSHTerm(
-                    machine: state.machines[state.selected],
-                  ),
+                  BlocBuilder<PasscodeCubit, Passcode>(builder: (context, passcodestate) {
+                    return SSHTerm(
+                      machine: state.machines[state.selected],
+                      passcode: passcodestate.passcode!,
+                    );
+                  }),
                   Align(
                     alignment: Alignment.topRight,
                     child: Padding(

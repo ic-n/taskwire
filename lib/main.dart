@@ -8,7 +8,7 @@ import 'package:taskwire/colors.dart';
 import 'package:taskwire/cubits/cubits.dart';
 import 'package:taskwire/pages/jobs.dart';
 import 'package:taskwire/pages/servers.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:taskwire/pages/settings.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +18,7 @@ Future<void> main() async {
       BlocProvider<JobCardsCubit>(create: (context) => JobCardsCubit()),
       BlocProvider<CurrentJobCubit>(create: (context) => CurrentJobCubit()),
       BlocProvider<MachinesCubit>(create: (context) => MachinesCubit()),
+      BlocProvider<PasscodeCubit>(create: (context) => PasscodeCubit()),
     ],
     child: const AppWrapper(),
   );
@@ -38,7 +39,7 @@ class AppWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Taskwire',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           splashFactory: NoSplash.splashFactory,
@@ -113,32 +114,32 @@ class Screen extends StatelessWidget {
                             type: PageTransitionType.fade, child: const Screen(screen: PageServers())));
                   },
                 ),
-                // BarButton(
-                //   title: 'settings',
-                //   onPressed: () {
-                //     Navigator.push(
-                //         context,
-                //         PageTransition<Screen>(
-                //             type: PageTransitionType.fade, child: const Screen(screen: PageSettings())));
-                //   },
-                // ),
-                TextButton(
+                BarButton(
+                  title: 'settings',
                   onPressed: () {
-                    launchUrl(Uri.parse('https://www.buymeacoffee.com/taskwire'));
+                    Navigator.push(
+                        context,
+                        PageTransition<Screen>(
+                            type: PageTransitionType.fade, child: const Screen(screen: PageSettings())));
                   },
-                  style: ButtonStyle(
-                    foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-                      if (states.contains(MaterialState.hovered)) {
-                        return fgl;
-                      }
-                      return fg;
-                    }),
-                  ),
-                  child: Text(
-                    'donate',
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: refreshing),
-                  ),
-                )
+                ),
+                // TextButton(
+                //   onPressed: () {
+                //     launchUrl(Uri.parse('https://www.buymeacoffee.com/taskwire'));
+                //   },
+                //   style: ButtonStyle(
+                //     foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+                //       if (states.contains(MaterialState.hovered)) {
+                //         return fgl;
+                //       }
+                //       return fg;
+                //     }),
+                //   ),
+                //   child: Text(
+                //     'donate',
+                //     style: Theme.of(context).textTheme.bodyText2?.copyWith(color: refreshing),
+                //   ),
+                // )
               ],
             ),
             Padding(
