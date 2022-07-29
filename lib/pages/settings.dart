@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:taskwire/assets.dart';
 import 'package:taskwire/colors.dart';
 import 'package:taskwire/components/title.dart';
-import 'package:taskwire/components/tools.dart';
 import 'package:taskwire/components/twforms.dart';
 import 'package:taskwire/cubits/cubits.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PageSettings extends StatelessWidget {
