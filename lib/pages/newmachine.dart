@@ -125,27 +125,16 @@ class _NewMachineFormState extends State<NewMachineForm> {
         spacer,
         Row(
           children: [
-            TWButton(
-              lable: 'Save',
-              color: intelegence,
-              callback: () {
-                context.read<MachinesCubit>().addMachine(
-                      Machine(name, host, port, user, password, rsa),
-                    );
-                Navigator.pop(context);
-              },
-            ),
-            spacer,
             BlocBuilder<PasscodeCubit, Passcode>(
               builder: (context, state) {
                 return TWButton(
-                  lable: 'RSA key exchange ${state.passcode}, ${state.passcodeHash}',
+                  lable: 'Exchange keys',
                   color: intelegence,
                   callback: () async {
                     if (state.passcode == null) {
                       return;
                     }
-                    var backend = SSHBackend(
+                    var backend = SSHBackendPwd(
                       host,
                       port,
                       user,
@@ -155,25 +144,22 @@ class _NewMachineFormState extends State<NewMachineForm> {
                     setState(() {
                       rsa = privKey;
                     });
-                    // Navigator.pop(context);
                   },
                 );
               },
             ),
-          ],
-        ),
-        spacer,
-        Container(
-          constraints: const BoxConstraints(
-            maxHeight: 120,
-          ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Text(rsa),
+            spacer,
+            TWButton(
+              lable: 'Save',
+              color: intelegence,
+              callback: () {
+                context.read<MachinesCubit>().addMachine(
+                      Machine(name, host, port, user, rsa),
+                    );
+                Navigator.pop(context);
+              },
             ),
-          ),
+          ],
         ),
       ],
     );

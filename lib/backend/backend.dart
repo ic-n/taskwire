@@ -96,18 +96,11 @@ class Backend {
 }
 
 class SSHBackend extends Backend {
-  final String host;
-  final int port;
-  final String user;
-  final String password;
-
   SSHClient? client;
 
-  SSHBackend(this.host, this.port, this.user, this.password);
+  SSHBackend();
 
-  Future<void> ensureClient() async {
-    client ??= await connectClientWithPassword(host, port, user, password);
-  }
+  Future<void> ensureClient() async {}
 
   @override
   Future<String> sendCommand(String command, [void Function(double)? progressCallback]) async {
@@ -160,5 +153,34 @@ class SSHBackend extends Backend {
     // final pub = keys[6].trim();
 
     return priv;
+  }
+}
+
+class SSHBackendPwd extends SSHBackend {
+  final String host;
+  final int port;
+  final String user;
+  final String password;
+
+  SSHBackendPwd(this.host, this.port, this.user, this.password);
+
+  @override
+  Future<void> ensureClient() async {
+    client ??= await connectClientWithPassword(host, port, user, password);
+  }
+}
+
+class SSHBackendSecure extends SSHBackend {
+  final String host;
+  final int port;
+  final String user;
+  final String rsa;
+  final String passphrase;
+
+  SSHBackendSecure(this.host, this.port, this.user, this.rsa, this.passphrase);
+
+  @override
+  Future<void> ensureClient() async {
+    client ??= await connectClient(host, port, user, rsa, passphrase);
   }
 }

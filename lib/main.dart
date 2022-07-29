@@ -6,6 +6,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:taskwire/colors.dart';
 import 'package:taskwire/cubits/cubits.dart';
+import 'package:taskwire/pages/about.dart';
 import 'package:taskwire/pages/jobs.dart';
 import 'package:taskwire/pages/servers.dart';
 import 'package:taskwire/pages/settings.dart';
@@ -123,23 +124,15 @@ class Screen extends StatelessWidget {
                             type: PageTransitionType.fade, child: const Screen(screen: PageSettings())));
                   },
                 ),
-                // TextButton(
-                //   onPressed: () {
-                //     launchUrl(Uri.parse('https://www.buymeacoffee.com/taskwire'));
-                //   },
-                //   style: ButtonStyle(
-                //     foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-                //       if (states.contains(MaterialState.hovered)) {
-                //         return fgl;
-                //       }
-                //       return fg;
-                //     }),
-                //   ),
-                //   child: Text(
-                //     'donate',
-                //     style: Theme.of(context).textTheme.bodyText2?.copyWith(color: refreshing),
-                //   ),
-                // )
+                BarButton(
+                  title: 'about',
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        PageTransition<Screen>(
+                            type: PageTransitionType.fade, child: const Screen(screen: PageAbout())));
+                  },
+                ),
               ],
             ),
             Padding(

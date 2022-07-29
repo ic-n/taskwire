@@ -3,14 +3,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taskwire/assets.dart';
 import 'package:taskwire/colors.dart';
 import 'package:taskwire/components/title.dart';
-import 'package:taskwire/components/tools.dart';
 import 'package:taskwire/components/twforms.dart';
-import 'package:taskwire/cubits/cubits.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PageSettings extends StatelessWidget {
-  const PageSettings({
+class PageAbout extends StatelessWidget {
+  const PageAbout({
     Key? key,
   }) : super(key: key);
 
@@ -20,22 +17,48 @@ class PageSettings extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const PageTitle(title: 'Settings'),
+        const PageTitle(title: 'About'),
         const SizedBox(
           height: 20,
         ),
         Expanded(
           child: ListView(
             children: [
-              SettingsBox(
+              const AboutBox(
                 body: [
-                  TWField(
-                    title: 'Set app passcode',
-                    hint: 'passcode that you will write on each app start',
-                    initialValue: '',
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    child: Text(
+                      'Authors',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  Para(paragraph: 'Developer: Nikola Kiselev\nUX: Daria Nosacheva'),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
+              AboutBox(
+                body: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    child: Text(
+                      'Top patrons',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  const Para(paragraph: 'v0: Yuriy, Eric and others'),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TWButton(
+                    lable: 'Donate',
                     color: reassurance,
-                    callback: (s) {
-                      context.read<PasscodeCubit>().newPasscode(s);
+                    callback: () {
+                      launchUrl(Uri.parse('https://www.buymeacoffee.com/taskwire'));
                     },
                   )
                 ],
@@ -65,8 +88,8 @@ class Para extends StatelessWidget {
   }
 }
 
-class SettingsBox extends StatelessWidget {
-  const SettingsBox({
+class AboutBox extends StatelessWidget {
+  const AboutBox({
     Key? key,
     required this.body,
   }) : super(key: key);

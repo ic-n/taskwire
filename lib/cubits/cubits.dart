@@ -167,10 +167,9 @@ class Machine {
   final String host;
   final int port;
   final String user;
-  final String password;
   final String rsa;
 
-  Machine(this.name, this.host, this.port, this.user, this.password, this.rsa);
+  Machine(this.name, this.host, this.port, this.user, this.rsa);
 }
 
 class Machines {
@@ -196,7 +195,6 @@ class MachinesCubit extends HydratedCubit<Machines> {
         'host': machine.host,
         'port': machine.port,
         'user': machine.user,
-        'password': machine.password,
         'rsa': machine.rsa,
       });
     }
@@ -215,7 +213,6 @@ class MachinesCubit extends HydratedCubit<Machines> {
         machine['host'] as String,
         machine['port'] as int,
         machine['user'] as String,
-        machine['password'] as String,
         (machine['rsa'] ?? '') as String,
       ));
     }

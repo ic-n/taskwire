@@ -67,46 +67,51 @@ class _JobWidgetState extends State<JobWidget> {
               const Spacer(),
               Container(
                 constraints: const BoxConstraints(maxHeight: 44),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<Machine>(
-                    enableFeedback: false,
-                    alignment: Alignment.centerRight,
-                    value: selected ?? defaultMachine,
-                    icon: Padding(
-                      padding: const EdgeInsets.only(left: 12),
-                      child: SvgPicture.asset(
-                        regularCloudImport,
-                        height: 20,
-                        color: authority,
-                      ),
-                    ),
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(inherit: false),
-                    dropdownColor: bg,
-                    focusColor: Colors.transparent,
-                    onChanged: ((value) {
-                      if (value != null) {
-                        setState(() {
-                          selected = value;
-                          backend = SSHBackend(
-                            value.host,
-                            value.port,
-                            value.user,
-                            value.password,
-                          );
-                        });
-                      }
-                    }),
-                    items: machinesState.machines.map<DropdownMenuItem<Machine>>((Machine value) {
-                      return DropdownMenuItem<Machine>(
+                child: BlocBuilder<PasscodeCubit, Passcode>(
+                  builder: (passcodeContext, passcodeState) {
+                    return DropdownButtonHideUnderline(
+                      child: DropdownButton<Machine>(
+                        enableFeedback: false,
                         alignment: Alignment.centerRight,
-                        value: value,
-                        child: Text(
-                          value.name,
-                          style: const TextStyle(color: authority),
+                        value: selected ?? defaultMachine,
+                        icon: Padding(
+                          padding: const EdgeInsets.only(left: 12),
+                          child: SvgPicture.asset(
+                            regularCloudImport,
+                            height: 20,
+                            color: authority,
+                          ),
                         ),
-                      );
-                    }).toList(),
-                  ),
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(inherit: false),
+                        dropdownColor: bg,
+                        focusColor: Colors.transparent,
+                        onChanged: ((value) {
+                          if (value != null) {
+                            setState(() {
+                              selected = value;
+                              backend = SSHBackendSecure(
+                                value.host,
+                                value.port,
+                                value.user,
+                                value.rsa,
+                                passcodeState.passcode!,
+                              );
+                            });
+                          }
+                        }),
+                        items: machinesState.machines.map<DropdownMenuItem<Machine>>((Machine value) {
+                          return DropdownMenuItem<Machine>(
+                            alignment: Alignment.centerRight,
+                            value: value,
+                            child: Text(
+                              value.name,
+                              style: const TextStyle(color: authority),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    );
+                  },
                 ),
               )
             ],
