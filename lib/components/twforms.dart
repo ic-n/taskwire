@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:taskwire/assets.dart';
 import 'package:taskwire/colors.dart';
 
 class TWButton extends StatelessWidget {
@@ -28,6 +32,59 @@ class TWButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Text(lable, style: Theme.of(context).textTheme.bodyText2),
+      ),
+    );
+  }
+}
+
+class TWButtonLoading extends StatefulWidget {
+  const TWButtonLoading({
+    Key? key,
+    required this.color,
+  }) : super(key: key);
+
+  final Color color;
+
+  @override
+  State<TWButtonLoading> createState() => _TWButtonLoadingState();
+}
+
+class _TWButtonLoadingState extends State<TWButtonLoading> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 500))..repeat();
+
+  @override
+  dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      style: ButtonStyle(
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(150),
+          side: BorderSide.none,
+        )),
+        backgroundColor: MaterialStateProperty.all(widget.color),
+      ),
+      onPressed: () {},
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (_, child) {
+            return Transform.rotate(
+              angle: _controller.value * 2 * pi,
+              child: child,
+            );
+          },
+          child: SvgPicture.asset(
+            regularRefresh,
+            color: fgl,
+          ),
+        ),
       ),
     );
   }

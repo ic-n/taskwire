@@ -48,23 +48,6 @@ class PageSettings extends StatelessWidget {
   }
 }
 
-class Para extends StatelessWidget {
-  const Para({
-    Key? key,
-    required this.paragraph,
-  }) : super(key: key);
-
-  final String paragraph;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      child: Text(paragraph),
-    );
-  }
-}
-
 class SettingsBox extends StatelessWidget {
   const SettingsBox({
     Key? key,
@@ -92,44 +75,6 @@ class SettingsBox extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class AllIcons extends StatelessWidget {
-  const AllIcons({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> icons = [];
-    for (var i in regular) {
-      icons.add(
-        Column(
-          children: [
-            SvgPicture.asset(
-              i,
-              color: Colors.white,
-              height: 40,
-            ),
-            Text(i.split('/').last),
-          ],
-        ),
-      );
-    }
-    return Column(
-      children: [
-        Expanded(
-          child: GridView.count(
-              controller: ScrollController(),
-              crossAxisCount: 4,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              childAspectRatio: 4,
-              children: icons),
-        ),
-      ],
     );
   }
 }

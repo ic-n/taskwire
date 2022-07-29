@@ -65,7 +65,8 @@ class PageAbout extends StatelessWidget {
               ),
             ],
           ),
-        )
+        ),
+        // Expanded(child: AllIcons())
       ],
     );
   }

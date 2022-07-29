@@ -51,6 +51,8 @@ class _NewMachineFormState extends State<NewMachineForm> {
   String user = 'root';
   String password = 'taskwire';
   String rsa = '';
+  bool rsaIsLoading = false;
+  bool rsaIsSet = false;
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +75,8 @@ class _NewMachineFormState extends State<NewMachineForm> {
           callback: (s) {
             setState(() {
               name = s;
+              rsaIsLoading = false;
+              rsaIsSet = false;
             });
           },
         ),
@@ -85,6 +89,8 @@ class _NewMachineFormState extends State<NewMachineForm> {
           callback: (s) {
             setState(() {
               host = s;
+              rsaIsLoading = false;
+              rsaIsSet = false;
             });
           },
         ),
@@ -97,6 +103,8 @@ class _NewMachineFormState extends State<NewMachineForm> {
           callback: (s) {
             setState(() {
               port = int.parse(s);
+              rsaIsLoading = false;
+              rsaIsSet = false;
             });
           },
         ),
@@ -108,6 +116,8 @@ class _NewMachineFormState extends State<NewMachineForm> {
           callback: (s) {
             setState(() {
               user = s;
+              rsaIsLoading = false;
+              rsaIsSet = false;
             });
           },
         ),
@@ -119,48 +129,56 @@ class _NewMachineFormState extends State<NewMachineForm> {
           callback: (s) {
             setState(() {
               password = s;
+              rsaIsLoading = false;
+              rsaIsSet = false;
             });
           },
         ),
         spacer,
-        Row(
-          children: [
-            BlocBuilder<PasscodeCubit, Passcode>(
-              builder: (context, state) {
-                return TWButton(
-                  lable: 'Exchange keys',
-                  color: intelegence,
-                  callback: () async {
-                    if (state.passcode == null) {
-                      return;
-                    }
-                    var backend = SSHBackendPwd(
-                      host,
-                      port,
-                      user,
-                      password,
-                    );
-                    final privKey = await backend.keyExchange(state.passcode!);
-                    setState(() {
-                      rsa = privKey;
-                    });
-                  },
-                );
-              },
-            ),
-            spacer,
-            TWButton(
-              lable: 'Save',
-              color: intelegence,
-              callback: () {
-                context.read<MachinesCubit>().addMachine(
-                      Machine(name, host, port, user, rsa),
-                    );
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
+        rsaIsSet
+            ? TWButton(
+                lable: 'Save',
+                color: intelegence,
+                callback: () {
+                  context.read<MachinesCubit>().addMachine(
+                        Machine(name, host, port, user, rsa),
+                      );
+                  Navigator.pop(context);
+                },
+              )
+            : (rsaIsLoading
+                ? const TWButtonLoading(
+                    color: bgd,
+                  )
+                : BlocBuilder<PasscodeCubit, Passcode>(
+                    builder: (context, state) {
+                      return TWButton(
+                        lable: 'Exchange keys',
+                        color: intelegence,
+                        callback: () async {
+                          if (state.passcode == null) {
+                            return;
+                          }
+
+                          setState(() {
+                            rsaIsLoading = true;
+                          });
+
+                          var backend = SSHBackendPwd(
+                            host,
+                            port,
+                            user,
+                            password,
+                          );
+                          final privKey = await backend.keyExchange(state.passcode!);
+                          setState(() {
+                            rsa = privKey;
+                            rsaIsSet = true;
+                          });
+                        },
+                      );
+                    },
+                  )),
       ],
     );
   }
