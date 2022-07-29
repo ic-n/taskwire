@@ -6,7 +6,6 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:taskwire/colors.dart';
 import 'package:taskwire/cubits/cubits.dart';
-import 'package:taskwire/cubits/liveterm.dart';
 import 'package:taskwire/pages/jobs.dart';
 import 'package:taskwire/pages/servers.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,7 +17,6 @@ Future<void> main() async {
     providers: [
       BlocProvider<JobCardsCubit>(create: (context) => JobCardsCubit()),
       BlocProvider<CurrentJobCubit>(create: (context) => CurrentJobCubit()),
-      BlocProvider<LiveTerminalCubit>(create: (context) => LiveTerminalCubit()),
       BlocProvider<MachinesCubit>(create: (context) => MachinesCubit()),
     ],
     child: const AppWrapper(),
@@ -137,7 +135,7 @@ class Screen extends StatelessWidget {
                     }),
                   ),
                   child: Text(
-                    "donate",
+                    'donate',
                     style: Theme.of(context).textTheme.bodyText2?.copyWith(color: refreshing),
                   ),
                 )

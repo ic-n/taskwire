@@ -51,44 +51,44 @@ class Backend {
     output = output.trim();
 
     if (output.contains('cygwin_nt')) {
-      return "windows";
+      return 'windows';
     }
     if (output.contains('mingw')) {
-      return "windows";
+      return 'windows';
     }
     if (output.contains('msys_nt')) {
-      return "windows";
+      return 'windows';
     }
 
     return output;
   }
 
   Future<String> getGoarch() async {
-    String output = await sendCommand("uname -m");
+    String output = await sendCommand('uname -m');
     output = output.trim();
     switch (output) {
       case 'x86_64':
-        return "amd64_v1";
+        return 'amd64_v1';
       case 'x86':
-        return "386";
+        return '386';
       case 'i686':
-        return "386";
+        return '386';
       case 'i386':
-        return "386";
+        return '386';
       case 'aarch64':
-        return "arm64";
+        return 'arm64';
       default:
         if (output.contains('armv5')) {
-          return "armv5";
+          return 'armv5';
         }
         if (output.contains('armv6')) {
-          return "armv6";
+          return 'armv6';
         }
         if (output.contains('armv7')) {
-          return "armv7";
+          return 'armv7';
         }
 
-        throw Exception("unknown arch: $output");
+        throw Exception('unknown arch: $output');
     }
   }
 
@@ -120,7 +120,7 @@ class SSHBackend extends Backend {
     try {
       await ensureClient();
     } on Exception catch (e) {
-      return "connection issue ${e.toString()}";
+      return 'connection issue ${e.toString()}';
     }
 
     var p = await client!.run(command);
@@ -153,7 +153,7 @@ class SSHBackend extends Backend {
 
     await keyex.close();
 
-    await client!.run("chmod +x $fn");
+    await client!.run('chmod +x $fn');
     final output = await client!.run('$fn secret2');
     final keys = utf8.decode(output).split('-----');
     final priv = keys[2].trim();

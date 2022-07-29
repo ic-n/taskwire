@@ -20,5 +20,7 @@ Future<SSHClient> connectClient(String host, int port, String user, String sshKe
 }
 
 Future<List<SSHKeyPair>> newPc(String sshKey, String passphrase) async {
+  const type = 'RSA PRIVATE KEY';
+  sshKey = '-----BEGIN $type-----\n$sshKey\n-----END $type-----';
   return SSHKeyPair.fromPem(sshKey, passphrase);
 }

@@ -31,8 +31,7 @@ func main() {
 	key, err := rsa.GenerateKey(reader, bitSize)
 	handleError(err)
 
-	// pass := os.Args[1]
-	pass := "os.Args[1]"
+	pass := strings.TrimSpace(os.Args[1])
 
 	private := privatePEMKey(key, pass)
 	public := publicPEMKey(key.PublicKey, pass)

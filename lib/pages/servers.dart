@@ -9,7 +9,7 @@ import 'package:taskwire/components/tools.dart';
 import 'package:taskwire/cubits/cubits.dart';
 import 'package:taskwire/main.dart';
 import 'package:taskwire/pages/newmachine.dart';
-import 'package:taskwire/ssh/ssh.dart';
+import 'package:taskwire/ssh/terminal.dart';
 
 class PageServers extends StatelessWidget {
   const PageServers({
@@ -48,7 +48,7 @@ class ServersBody extends StatelessWidget {
             tools: [
               ToolsItem(
                   iconPath: regularCloudPlus,
-                  label: "Add new server",
+                  label: 'Add new server',
                   color: authority,
                   onClick: () {
                     Navigator.push(
@@ -116,10 +116,7 @@ class ServersBody extends StatelessWidget {
                 ),
                 child: Stack(children: [
                   SSHTerm(
-                    host: state.machines[state.selected].host,
-                    port: state.machines[state.selected].port,
-                    user: state.machines[state.selected].user,
-                    password: state.machines[state.selected].password,
+                    machine: state.machines[state.selected],
                   ),
                   Align(
                     alignment: Alignment.topRight,

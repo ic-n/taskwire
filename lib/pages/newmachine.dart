@@ -45,12 +45,12 @@ class NewMachineForm extends StatefulWidget {
 }
 
 class _NewMachineFormState extends State<NewMachineForm> {
-  String name = "";
-  String host = "";
+  String name = '';
+  String host = '';
   int port = 22;
-  String user = "";
-  String password = "";
-  String key = "";
+  String user = '';
+  String password = '';
+  String rsa = '';
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +130,7 @@ class _NewMachineFormState extends State<NewMachineForm> {
               color: intelegence,
               callback: () {
                 context.read<MachinesCubit>().addMachine(
-                      Machine(name, host, port, user, password),
+                      Machine(name, host, port, user, password, rsa),
                     );
                 Navigator.pop(context);
               },
@@ -151,7 +151,7 @@ class _NewMachineFormState extends State<NewMachineForm> {
                 );
                 final privKey = await backend.keyExchange();
                 setState(() {
-                  key = privKey;
+                  rsa = privKey;
                 });
                 // Navigator.pop(context);
               },
@@ -167,7 +167,7 @@ class _NewMachineFormState extends State<NewMachineForm> {
             scrollDirection: Axis.vertical,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Text(key),
+              child: Text(rsa),
             ),
           ),
         ),

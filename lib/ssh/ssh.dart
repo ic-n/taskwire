@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:taskwire/cubits/liveterm.dart';
 
+@Deprecated('Use just terminal')
 class SSHTerm extends StatefulWidget {
   const SSHTerm({
     Key? key,

@@ -26,14 +26,14 @@ class JobsWidget extends StatelessWidget {
         List<String> lines = [];
         for (var step in jobCard.steps) {
           String command = step.command.trim();
-          if (command != "") {
+          if (command != '') {
             lines.add('-> $command');
           }
         }
 
         tiles.add(Tile(
           title: jobCard.title,
-          body: lines.join("\n"),
+          body: lines.join('\n'),
           time: '${t.day}.${t.month} ${t.hour}:${t.minute}',
           buttons: [
             TileButton(

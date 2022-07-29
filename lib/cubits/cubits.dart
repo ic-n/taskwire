@@ -31,31 +31,31 @@ class JobCardsCubit extends HydratedCubit<JobCards> {
     for (var card in state.cards) {
       List<Map<String, dynamic>> steps = [];
       for (var step in card.steps) {
-        steps.add({"command": step.command});
+        steps.add({'command': step.command});
       }
       cards.add({
-        "title": card.title,
-        "touched": card.touched.toIso8601String(),
-        "steps": steps,
+        'title': card.title,
+        'touched': card.touched.toIso8601String(),
+        'steps': steps,
       });
     }
-    return {"cards": cards};
+    return {'cards': cards};
   }
 
   @override
   JobCards? fromJson(Map<String, dynamic> json) {
     List<JobCard> cards = [];
-    for (var cardData in json["cards"] as List<dynamic>) {
+    for (var cardData in json['cards'] as List<dynamic>) {
       var card = cardData as Map<String, dynamic>;
       List<StepData> steps = [];
-      for (var stepData in card["steps"] as List<dynamic>) {
+      for (var stepData in card['steps'] as List<dynamic>) {
         var step = stepData as Map<String, dynamic>;
-        steps.add(StepData(command: step["command"] as String));
+        steps.add(StepData(command: step['command'] as String));
       }
       cards.add(JobCard(
-        card["title"] as String,
+        card['title'] as String,
         steps,
-        DateTime.parse(card["touched"] as String),
+        DateTime.parse(card['touched'] as String),
       ));
     }
     return JobCards(cards, JobCard('', [], DateTime.now()));
@@ -165,8 +165,9 @@ class Machine {
   final int port;
   final String user;
   final String password;
+  final String rsa;
 
-  Machine(this.name, this.host, this.port, this.user, this.password);
+  Machine(this.name, this.host, this.port, this.user, this.password, this.rsa);
 }
 
 class Machines {
@@ -188,29 +189,31 @@ class MachinesCubit extends HydratedCubit<Machines> {
     List<Map<String, dynamic>> machines = [];
     for (var machine in state.machines) {
       machines.add({
-        "name": machine.name,
-        "host": machine.host,
-        "port": machine.port,
-        "user": machine.user,
-        "password": machine.password,
+        'name': machine.name,
+        'host': machine.host,
+        'port': machine.port,
+        'user': machine.user,
+        'password': machine.password,
+        'rsa': machine.rsa,
       });
     }
     return {
-      "machines": machines,
+      'machines': machines,
     };
   }
 
   @override
   Machines? fromJson(Map<String, dynamic> json) {
     var machines = Machines();
-    for (var machineData in json["machines"] as List<dynamic>) {
+    for (var machineData in json['machines'] as List<dynamic>) {
       var machine = machineData as Map<String, dynamic>;
       machines.machines.add(Machine(
-        machine["name"] as String,
-        machine["host"] as String,
-        machine["port"] as int,
-        machine["user"] as String,
-        machine["password"] as String,
+        machine['name'] as String,
+        machine['host'] as String,
+        machine['port'] as int,
+        machine['user'] as String,
+        machine['password'] as String,
+        (machine['rsa'] ?? '') as String,
       ));
     }
     return machines;
