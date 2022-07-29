@@ -16,9 +16,11 @@ class SSHTerm extends StatefulWidget {
   const SSHTerm({
     Key? key,
     required this.machine,
+    required this.passcode,
   }) : super(key: key);
 
   final Machine machine;
+  final String passcode;
 
   @override
   State<SSHTerm> createState() => _SSHTermState();
@@ -79,7 +81,7 @@ class _SSHTermState extends State<SSHTerm> {
       widget.machine.port,
       widget.machine.user,
       widget.machine.rsa,
-      'secret2',
+      widget.passcode,
     );
     var newSh = await newClient.shell();
     setState(() {

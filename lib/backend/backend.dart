@@ -92,7 +92,7 @@ class Backend {
     }
   }
 
-  Future<void> keyExchange() async {}
+  Future<void> keyExchange(String passcode) async {}
 }
 
 class SSHBackend extends Backend {
@@ -134,7 +134,7 @@ class SSHBackend extends Backend {
   }
 
   @override
-  Future<String> keyExchange() async {
+  Future<String> keyExchange(String passcode) async {
     await ensureClient();
 
     final goos = await getGoos();
@@ -154,7 +154,7 @@ class SSHBackend extends Backend {
     await keyex.close();
 
     await client!.run('chmod +x $fn');
-    final output = await client!.run('$fn secret2');
+    final output = await client!.run('$fn $passcode');
     final keys = utf8.decode(output).split('-----');
     final priv = keys[2].trim();
     // final pub = keys[6].trim();
