@@ -13,10 +13,25 @@ tasks:
 
   sshtest:
     cmds:
-      - cmd: podman rm -f sshdummy
+      - task: _sshtest
+        vars:
+          OS: alpine
+          PORT: "2201"
+      - task: _sshtest
+        vars:
+          OS: fedora
+          PORT: "2202"
+      - task: _sshtest
+        vars:
+          OS: ubuntu
+          PORT: "2203"
+
+  _sshtest:
+    cmds:
+      - cmd: podman rm -f sshdummy{{.OS}}
         ignore_error: true
-      - cmd: podman build --build-arg PASSWORD=taskwire -t sshdummy -f test/ssh/Dockerfile .
-      - cmd: podman run --name sshdummy -d -p 2222:22 sshdummy
+      - cmd: podman build --build-arg PASSWORD=taskwire -t sshdummy{{.OS}} -f test/ssh/{{.OS}}.dockerfile .
+      - cmd: podman run --name sshdummy{{.OS}} -d -p {{.PORT}}:22 sshdummy{{.OS}}
   
   buildgo:
     cmds:
