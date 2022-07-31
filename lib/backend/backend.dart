@@ -110,11 +110,7 @@ class SSHBackend extends Backend {
       t = Timer.periodic(const Duration(milliseconds: 10), progressFunc(progressCallback));
     }
 
-    try {
-      await ensureClient();
-    } on Exception catch (e) {
-      return 'connection issue ${e.toString()}';
-    }
+    await ensureClient();
 
     var p = await client!.run(command);
 
@@ -154,6 +150,12 @@ class SSHBackend extends Backend {
 
     return priv;
   }
+
+  Future<SSHSession> shell() async {
+    await ensureClient();
+
+    return await client!.shell();
+  }
 }
 
 class SSHBackendPwd extends SSHBackend {
@@ -181,6 +183,6 @@ class SSHBackendSecure extends SSHBackend {
 
   @override
   Future<void> ensureClient() async {
-    client ??= await connectClient(host, port, user, rsa, passphrase);
+    client ??= await connectClientRSA(host, port, user, rsa, passphrase);
   }
 }

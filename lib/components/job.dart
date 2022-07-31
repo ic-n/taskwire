@@ -20,6 +20,7 @@ class JobWidget extends StatefulWidget {
 class _JobWidgetState extends State<JobWidget> {
   SSHBackend? backend;
   Machine? selected;
+  String connectionError = "";
 
   @override
   Widget build(BuildContext context) {
@@ -28,32 +29,41 @@ class _JobWidgetState extends State<JobWidget> {
         var defaultMachine = machinesState.machines.isNotEmpty ? machinesState.machines.last : null;
 
         return BlocBuilder<CurrentJobCubit, Job>(builder: (currentJobContext, currentJobState) {
-          if (currentJobState.steps.isEmpty) {
-            return const Padding(
-              padding: EdgeInsets.only(top: 12),
-              child: Opacity(opacity: 0.5, child: Text('nothing selected')),
-            );
-          }
-
+          final Widget timelineView;
           List<Widget> timeline = [];
-          for (var i = 0; i < currentJobState.steps.length; i++) {
-            timeline.add(CommandStep(
-                status: currentJobState.steps[i].status,
-                fn: () {
-                  if (backend != null) {
-                    currentJobContext.read<CurrentJobCubit>().resetStep(i);
-                    runStepCommand(currentJobContext, backend!, currentJobState.steps, i);
-                  }
-                },
-                progress: currentJobState.steps[i].progress,
-                command: currentJobState.steps[i].command,
-                out: currentJobState.steps[i].out));
-          }
 
-          timeline.add(EndStep(status: currentJobState.steps[currentJobState.steps.length - 1].status));
+          if (currentJobState.steps.isNotEmpty) {
+            if (connectionError != '') {
+              timeline.add(Text('$connectionError\n'));
+            }
 
-          if (currentJobState.startNow) {
-            runAll(backend, currentJobContext, currentJobState, defaultMachine)();
+            for (var i = 0; i < currentJobState.steps.length; i++) {
+              timeline.add(CommandStep(
+                  status: currentJobState.steps[i].status,
+                  fn: () {
+                    if (backend != null) {
+                      currentJobContext.read<CurrentJobCubit>().resetStep(i);
+                      runStepCommand(currentJobContext, backend!, currentJobState.steps, i);
+                    }
+                  },
+                  progress: currentJobState.steps[i].progress,
+                  command: currentJobState.steps[i].command,
+                  out: currentJobState.steps[i].out));
+            }
+
+            timeline.add(EndStep(status: currentJobState.steps[currentJobState.steps.length - 1].status));
+
+            if (currentJobState.startNow) {
+              runAll(backend, currentJobContext, currentJobState, defaultMachine)();
+            }
+
+            timelineView = ListView(
+              controller: ScrollController(),
+              shrinkWrap: true,
+              children: timeline,
+            );
+          } else {
+            timelineView = Text("No task selected");
           }
 
           return Tools(
@@ -115,11 +125,7 @@ class _JobWidgetState extends State<JobWidget> {
                 ),
               )
             ],
-            child: ListView(
-              controller: ScrollController(),
-              shrinkWrap: true,
-              children: timeline,
-            ),
+            child: timelineView,
           );
         });
       },
@@ -161,19 +167,25 @@ class _JobWidgetState extends State<JobWidget> {
 
   void runStepCommand(BuildContext context, Backend backend, List<StepData> steps, int stepIndex,
       [void Function()? callback]) {
-    backend.sendCommand(steps[stepIndex].command, (prog) {
-      var newStep = steps[stepIndex];
-      newStep.progress = prog;
-      context.read<CurrentJobCubit>().updateStep(stepIndex, newStep);
-    }).then((value) {
-      var newStep = steps[stepIndex];
-      newStep.out = value;
-      newStep.status = true;
-      newStep.progress = 1;
-      context.read<CurrentJobCubit>().updateStep(stepIndex, newStep);
-      if (callback != null) {
-        callback();
-      }
-    });
+    try {
+      backend.sendCommand(steps[stepIndex].command, (prog) {
+        var newStep = steps[stepIndex];
+        newStep.progress = prog;
+        context.read<CurrentJobCubit>().updateStep(stepIndex, newStep);
+      }).then((value) {
+        var newStep = steps[stepIndex];
+        newStep.out = value;
+        newStep.status = true;
+        newStep.progress = 1;
+        context.read<CurrentJobCubit>().updateStep(stepIndex, newStep);
+        if (callback != null) {
+          callback();
+        }
+      });
+    } catch (e) {
+      setState(() {
+        connectionError = 'connection issue ${e.toString()}';
+      });
+    }
   }
 }

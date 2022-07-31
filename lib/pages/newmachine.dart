@@ -45,14 +45,15 @@ class NewMachineForm extends StatefulWidget {
 }
 
 class _NewMachineFormState extends State<NewMachineForm> {
-  String name = 'Test';
-  String host = 'localhost';
-  int port = 2222;
-  String user = 'root';
-  String password = 'taskwire';
+  String name = '';
+  String host = '';
+  int port = 22;
+  String user = '';
+  String password = '';
   String rsa = '';
   bool rsaIsLoading = false;
   bool rsaIsSet = false;
+  String rsaError = '';
 
   @override
   Widget build(BuildContext context) {
@@ -63,123 +64,150 @@ class _NewMachineFormState extends State<NewMachineForm> {
     var smallSpacer = const SizedBox(
       height: 10,
     );
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TWField(
-          title: 'New machine name',
-          hint: 'My home server',
-          initialValue: name,
-          color: intelegence,
-          callback: (s) {
-            setState(() {
-              name = s;
-              rsaIsLoading = false;
-              rsaIsSet = false;
-            });
-          },
-        ),
-        smallSpacer,
-        TWField(
-          title: 'Machine host',
-          hint: 'ssh.example.com',
-          initialValue: host,
-          color: intelegence,
-          callback: (s) {
-            setState(() {
-              host = s;
-              rsaIsLoading = false;
-              rsaIsSet = false;
-            });
-          },
-        ),
-        smallSpacer,
-        TWNumberField(
-          title: 'Machine port',
-          hint: '22',
-          initialValue: port.toString(),
-          color: intelegence,
-          callback: (s) {
-            setState(() {
-              port = int.parse(s);
-              rsaIsLoading = false;
-              rsaIsSet = false;
-            });
-          },
-        ),
-        TWField(
-          title: 'Machine user',
-          hint: 'root',
-          initialValue: user,
-          color: intelegence,
-          callback: (s) {
-            setState(() {
-              user = s;
-              rsaIsLoading = false;
-              rsaIsSet = false;
-            });
-          },
-        ),
-        TWPasswordField(
-          title: 'Machine password',
-          hint: 'password for $user',
-          initialValue: password,
-          color: intelegence,
-          callback: (s) {
-            setState(() {
-              password = s;
-              rsaIsLoading = false;
-              rsaIsSet = false;
-            });
-          },
-        ),
-        spacer,
-        rsaIsSet
-            ? TWButton(
-                lable: 'Save',
-                color: intelegence,
-                callback: () {
-                  context.read<MachinesCubit>().addMachine(
-                        Machine(name, host, port, user, rsa),
-                      );
-                  Navigator.pop(context);
-                },
-              )
-            : (rsaIsLoading
-                ? const TWButtonLoading(
-                    color: bgd,
-                  )
-                : BlocBuilder<PasscodeCubit, Passcode>(
-                    builder: (context, state) {
-                      return TWButton(
-                        lable: 'Exchange keys',
-                        color: intelegence,
-                        callback: () async {
-                          if (state.passcode == null) {
-                            return;
-                          }
-
-                          setState(() {
-                            rsaIsLoading = true;
-                          });
-
-                          var backend = SSHBackendPwd(
-                            host,
-                            port,
-                            user,
-                            password,
+    return Expanded(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TWField(
+              title: 'New machine name',
+              hint: 'My home server',
+              initialValue: name,
+              color: intelegence,
+              callback: (s) {
+                setState(() {
+                  name = s;
+                  rsaIsLoading = false;
+                  rsaIsSet = false;
+                  rsaError = '';
+                });
+              },
+            ),
+            smallSpacer,
+            TWField(
+              title: 'Machine host',
+              hint: 'ssh.example.com',
+              initialValue: host,
+              color: intelegence,
+              callback: (s) {
+                setState(() {
+                  host = s;
+                  rsaIsLoading = false;
+                  rsaIsSet = false;
+                  rsaError = '';
+                });
+              },
+            ),
+            smallSpacer,
+            TWNumberField(
+              title: 'Machine port',
+              hint: '22',
+              initialValue: port.toString(),
+              color: intelegence,
+              callback: (s) {
+                setState(() {
+                  port = int.parse(s);
+                  rsaIsLoading = false;
+                  rsaIsSet = false;
+                  rsaError = '';
+                });
+              },
+            ),
+            TWField(
+              title: 'Machine user',
+              hint: 'root',
+              initialValue: user,
+              color: intelegence,
+              callback: (s) {
+                setState(() {
+                  user = s;
+                  rsaIsLoading = false;
+                  rsaIsSet = false;
+                  rsaError = '';
+                });
+              },
+            ),
+            TWPasswordField(
+              title: 'Machine password',
+              hint: 'password for $user',
+              initialValue: password,
+              color: intelegence,
+              callback: (s) {
+                setState(() {
+                  password = s;
+                  rsaIsLoading = false;
+                  rsaIsSet = false;
+                  rsaError = '';
+                });
+              },
+            ),
+            spacer,
+            rsaIsSet
+                ? TWButton(
+                    lable: 'Save',
+                    color: intelegence,
+                    callback: () {
+                      context.read<MachinesCubit>().addMachine(
+                            Machine(name, host, port, user, rsa),
                           );
-                          final privKey = await backend.keyExchange(state.passcode!);
-                          setState(() {
-                            rsa = privKey;
-                            rsaIsSet = true;
-                          });
-                        },
-                      );
+                      Navigator.pop(context);
                     },
-                  )),
-      ],
+                  )
+                : (rsaIsLoading
+                    ? const TWButtonLoading(
+                        color: bgd,
+                      )
+                    : BlocBuilder<PasscodeCubit, Passcode>(
+                        builder: (context, state) {
+                          return TWButton(
+                            lable: 'Exchange keys',
+                            color: intelegence,
+                            callback: () async {
+                              if (state.passcode == null) {
+                                return;
+                              }
+
+                              setState(() {
+                                rsaIsLoading = true;
+                                rsaError = '';
+                              });
+
+                              var backend = SSHBackendPwd(
+                                host,
+                                port,
+                                user,
+                                password,
+                              );
+                              final String privKey;
+                              try {
+                                privKey = await backend.keyExchange(state.passcode!);
+                              } catch (e) {
+                                setState(() {
+                                  rsaIsSet = false;
+                                  rsaIsLoading = false;
+                                  rsaError = 'connection issue ${e.toString()}';
+                                });
+                                return;
+                              }
+                              setState(() {
+                                rsa = privKey;
+                                rsaIsSet = true;
+                                rsaError = '';
+                              });
+                            },
+                          );
+                        },
+                      )),
+            if (rsaError != '')
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text(rsaError),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

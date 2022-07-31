@@ -3,10 +3,10 @@ import 'dart:convert';
 
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/material.dart';
+import 'package:taskwire/backend/backend.dart';
 import 'dart:core';
 
 import 'package:taskwire/cubits/cubits.dart';
-import 'package:taskwire/ssh/connector.dart';
 import 'package:xterm/flutter.dart';
 import 'package:xterm/terminal/terminal.dart';
 import 'package:xterm/terminal/terminal_backend.dart';
@@ -67,7 +67,9 @@ class Shell extends TerminalBackend {
 }
 
 class _SSHTermState extends State<SSHTerm> {
-  Shell? backend;
+  Shell? shell;
+
+  String connectionError = 'connecting...';
 
   @override
   void initState() {
@@ -76,26 +78,30 @@ class _SSHTermState extends State<SSHTerm> {
   }
 
   Future<void> createClient() async {
-    var newClient = await connectClient(
+    final backend = SSHBackendSecure(
       widget.machine.host,
       widget.machine.port,
       widget.machine.user,
       widget.machine.rsa,
       widget.passcode,
     );
-    var newSh = await newClient.shell();
-    setState(() {
-      backend = Shell(newSh);
-    });
+    try {
+      var newSh = await backend.shell();
+      setState(() {
+        shell = Shell(newSh);
+      });
+    } catch (e) {
+      connectionError = 'connection issue ${e.toString()}';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (backend == null) {
-      return const Text('connecting...');
+    if (shell == null) {
+      return Text(connectionError);
     }
     var terminal = Terminal(
-        backend: backend,
+        backend: shell,
         maxLines: 10000,
         theme: const TerminalTheme(
           cursor: 0XFF292d3e,

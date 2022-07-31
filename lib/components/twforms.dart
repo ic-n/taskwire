@@ -277,3 +277,51 @@ OutlineInputBorder inputBorder(double width, Color color) {
         : BorderSide.none,
   );
 }
+
+class TWBox extends StatelessWidget {
+  const TWBox({
+    Key? key,
+    required this.body,
+  }) : super(key: key);
+
+  final List<Widget> body;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Container(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          color: bgd,
+        ),
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: body,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class TWPara extends StatelessWidget {
+  const TWPara({
+    Key? key,
+    required this.paragraph,
+  }) : super(key: key);
+
+  final String paragraph;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      child: Text(paragraph),
+    );
+  }
+}

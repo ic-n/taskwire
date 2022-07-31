@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +15,8 @@ import 'package:taskwire/pages/jobs.dart';
 import 'package:taskwire/pages/servers.dart';
 import 'package:taskwire/pages/settings.dart';
 
+HydratedStorage? storage;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -25,7 +30,7 @@ Future<void> main() async {
     child: const AppWrapper(),
   );
 
-  var storage = await HydratedStorage.build(
+  storage = await HydratedStorage.build(
     storageDirectory: await getApplicationSupportDirectory(),
   );
 
@@ -148,15 +153,15 @@ class Screen extends StatelessWidget {
                                       type: PageTransitionType.fade, child: const Screen(screen: PageSettings())));
                             },
                           ),
-                          BarButton(
-                            title: 'about',
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  PageTransition<Screen>(
-                                      type: PageTransitionType.fade, child: const Screen(screen: PageAbout())));
-                            },
-                          ),
+                          // BarButton(
+                          //   title: 'about',
+                          //   onPressed: () {
+                          //     Navigator.push(
+                          //         context,
+                          //         PageTransition<Screen>(
+                          //             type: PageTransitionType.fade, child: const Screen(screen: PageAbout())));
+                          //   },
+                          // ),
                         ],
                 ),
                 Padding(
@@ -187,16 +192,23 @@ class PinPad extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(200),
-      child: TWField(
-        title: 'Unlock application with passcode',
-        hint: 'passcode',
-        initialValue: '',
-        color: authority,
-        callback: (code) {
-          if (state.checkPasscode(code)) {
-            context.read<PasscodeCubit>().savePasscode(code);
-          }
-        },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TWPasswordField(
+            title: 'Unlock application with passcode',
+            hint: 'passcode',
+            initialValue: '',
+            color: authority,
+            callback: (code) {
+              if (state.checkPasscode(code)) {
+                Timer(const Duration(milliseconds: 100), () {
+                  context.read<PasscodeCubit>().savePasscode(code);
+                });
+              }
+            },
+          ),
+        ],
       ),
     );
   }

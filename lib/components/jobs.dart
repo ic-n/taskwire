@@ -78,7 +78,7 @@ class JobsWidget extends StatelessWidget {
               crossAxisCount: ((queryData.size.width - 200) / 600).ceil(),
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
-              childAspectRatio: 1,
+              childAspectRatio: 1.25,
               children: tiles));
     });
   }

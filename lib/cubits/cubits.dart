@@ -64,6 +64,10 @@ class JobCardsCubit extends HydratedCubit<JobCards> {
     return JobCards(cards, JobCard('', [], DateTime.now()));
   }
 
+  void reset() {
+    emit(JobCards([], JobCard('', [], DateTime.now())));
+  }
+
   void addNew(JobCard newCard) {
     state.cards.add(newCard);
     emit(state);
@@ -107,6 +111,10 @@ class Job {
 
 class CurrentJobCubit extends Cubit<Job> {
   CurrentJobCubit() : super(Job());
+
+  void reset() {
+    emit(Job());
+  }
 
   void resetRuns() {
     List<StepData> newSteps = [];
@@ -217,6 +225,10 @@ class MachinesCubit extends HydratedCubit<Machines> {
       ));
     }
     return machines;
+  }
+
+  void reset() {
+    emit(Machines());
   }
 
   void openTerm(int id) {

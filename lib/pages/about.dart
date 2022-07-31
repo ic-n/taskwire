@@ -24,7 +24,7 @@ class PageAbout extends StatelessWidget {
         Expanded(
           child: ListView(
             children: [
-              const AboutBox(
+              const TWBox(
                 body: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -34,13 +34,13 @@ class PageAbout extends StatelessWidget {
                       textAlign: TextAlign.start,
                     ),
                   ),
-                  Para(paragraph: 'Developer: Nikola Kiselev\nUX: Daria Nosacheva'),
+                  TWPara(paragraph: 'Developer: Nikola Kiselev\nUX: Daria Nosacheva'),
                   SizedBox(
                     height: 20,
                   ),
                 ],
               ),
-              AboutBox(
+              TWBox(
                 body: [
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -50,7 +50,7 @@ class PageAbout extends StatelessWidget {
                       textAlign: TextAlign.start,
                     ),
                   ),
-                  const Para(paragraph: 'v0: Yuriy, Eric and others'),
+                  const TWPara(paragraph: 'v0: Yuriy, Eric and others'),
                   const SizedBox(
                     height: 20,
                   ),
@@ -68,54 +68,6 @@ class PageAbout extends StatelessWidget {
         ),
         // Expanded(child: AllIcons())
       ],
-    );
-  }
-}
-
-class Para extends StatelessWidget {
-  const Para({
-    Key? key,
-    required this.paragraph,
-  }) : super(key: key);
-
-  final String paragraph;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      child: Text(paragraph),
-    );
-  }
-}
-
-class AboutBox extends StatelessWidget {
-  const AboutBox({
-    Key? key,
-    required this.body,
-  }) : super(key: key);
-
-  final List<Widget> body;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          color: bgd,
-        ),
-        margin: EdgeInsets.zero,
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: body,
-          ),
-        ),
-      ),
     );
   }
 }

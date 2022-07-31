@@ -21,10 +21,7 @@ class PageServers extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        PageTitle(title: 'Servers'),
-        Expanded(child: ServersBody())
-      ],
+      children: const [PageTitle(title: 'Servers'), Expanded(child: ServersBody())],
     );
   }
 }

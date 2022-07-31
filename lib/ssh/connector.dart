@@ -10,7 +10,7 @@ Future<SSHClient> connectClientWithPassword(String host, int port, String user, 
   );
 }
 
-Future<SSHClient> connectClient(String host, int port, String user, String sshKey, String passphrase) async {
+Future<SSHClient> connectClientRSA(String host, int port, String user, String sshKey, String passphrase) async {
   var socket = await SSHSocket.connect(host, port);
   return SSHClient(
     socket,

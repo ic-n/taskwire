@@ -4,6 +4,7 @@ import 'package:taskwire/components/title.dart';
 import 'package:taskwire/components/twforms.dart';
 import 'package:taskwire/cubits/cubits.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:taskwire/main.dart';
 
 class PageSettings extends StatelessWidget {
   const PageSettings({
@@ -23,62 +24,63 @@ class PageSettings extends StatelessWidget {
         Expanded(
           child: ListView(
             children: [
-              SettingsBox(
+              const TWBox(
                 body: [
-                  TWField(
-                    title: 'Set app passcode',
-                    hint: 'passcode that you will write on each app start',
-                    initialValue: '',
-                    color: reassurance,
-                    callback: (s) {
-                      context.read<PasscodeCubit>().newPasscode(s);
-                    },
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    child: Text(
+                      'Authors',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.start,
+                    ),
                   ),
-                  const SizedBox(
-                    height: 15,
+                  TWPara(paragraph: 'Developer: Nikola Kiselev\nUX: Daria Nosacheva'),
+                  SizedBox(
+                    height: 20,
                   ),
-                  TWButton(
-                    lable: 'Reset',
-                    callback: () => context.read<PasscodeCubit>().reset(),
-                    color: reassurance,
-                  )
+                ],
+              ),
+              TWBox(
+                body: [
+                  Wrap(
+                    direction: Axis.horizontal,
+                    spacing: 10,
+                    runSpacing: 20,
+                    children: [
+                      TWButton(
+                        lable: 'Reset tasks',
+                        callback: () {
+                          context.read<JobCardsCubit>().reset();
+                          context.read<CurrentJobCubit>().reset();
+                        },
+                        color: bgl,
+                      ),
+                      TWButton(
+                        lable: 'Reset servers connections',
+                        callback: () {
+                          context.read<MachinesCubit>().reset();
+                        },
+                        color: bgl,
+                      ),
+                      TWButton(
+                        lable: 'Reset application',
+                        callback: () {
+                          storage?.clear();
+                          context.read<JobCardsCubit>().reset();
+                          context.read<CurrentJobCubit>().reset();
+                          context.read<MachinesCubit>().reset();
+                          context.read<PasscodeCubit>().reset();
+                        },
+                        color: bgl,
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ],
           ),
         )
       ],
-    );
-  }
-}
-
-class SettingsBox extends StatelessWidget {
-  const SettingsBox({
-    Key? key,
-    required this.body,
-  }) : super(key: key);
-
-  final List<Widget> body;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          color: bgd,
-        ),
-        margin: EdgeInsets.zero,
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: body,
-          ),
-        ),
-      ),
     );
   }
 }
