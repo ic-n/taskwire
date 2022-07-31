@@ -10,21 +10,21 @@ import 'package:taskwire/cubits/cubits.dart';
 import 'package:taskwire/main.dart';
 import 'package:taskwire/pages/newtask.dart';
 
-class JobsWidget extends StatelessWidget {
-  const JobsWidget({
+class TasksWidget extends StatelessWidget {
+  const TasksWidget({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<JobCardsCubit, JobCards>(builder: (context, state) {
+    return BlocBuilder<TaskCardsCubit, TaskCards>(builder: (context, state) {
       List<Tile> tiles = [];
-      for (var jobIndex = 0; jobIndex < state.cards.length; jobIndex++) {
-        var jobCard = state.cards[jobIndex];
-        var t = jobCard.touched;
+      for (var taskIndex = 0; taskIndex < state.cards.length; taskIndex++) {
+        var taskCard = state.cards[taskIndex];
+        var t = taskCard.touched;
 
         List<String> lines = [];
-        for (var step in jobCard.steps) {
+        for (var step in taskCard.steps) {
           String command = step.command.trim();
           if (command != '') {
             lines.add('-> $command');
@@ -32,7 +32,7 @@ class JobsWidget extends StatelessWidget {
         }
 
         tiles.add(Tile(
-          title: jobCard.title,
+          title: taskCard.title,
           body: lines.join('\n'),
           time: '${t.day}.${t.month} ${t.hour}:${t.minute}',
           buttons: [
@@ -40,10 +40,10 @@ class JobsWidget extends StatelessWidget {
               color: friendly,
               buttonIcon: regularEdit,
               action: () {
-                context.read<CurrentJobCubit>().steps(jobCard.steps);
+                context.read<CurrentTaskCubit>().steps(taskCard.steps);
                 context
-                    .read<JobCardsCubit>()
-                    .setCurrentEdit(JobCard(jobCard.title, jobCard.steps, DateTime.now(), jobIndex));
+                    .read<TaskCardsCubit>()
+                    .setCurrentEdit(TaskCard(taskCard.title, taskCard.steps, DateTime.now(), taskIndex));
                 Navigator.push(context,
                     PageTransition<Screen>(type: PageTransitionType.fade, child: const Screen(screen: PageNewTask())));
               },
@@ -52,8 +52,8 @@ class JobsWidget extends StatelessWidget {
               color: friendly,
               buttonIcon: regularArrowRight,
               action: () {
-                context.read<CurrentJobCubit>().steps(jobCard.steps);
-                context.read<CurrentJobCubit>().mustRun();
+                context.read<CurrentTaskCubit>().steps(taskCard.steps);
+                context.read<CurrentTaskCubit>().mustRun();
               },
             )
           ],
@@ -67,7 +67,7 @@ class JobsWidget extends StatelessWidget {
               iconPath: regularFilePlus,
               label: 'Add new task',
               onClick: () {
-                context.read<CurrentJobCubit>().steps([]);
+                context.read<CurrentTaskCubit>().steps([]);
                 Navigator.push(context,
                     PageTransition<Screen>(type: PageTransitionType.fade, child: const Screen(screen: PageNewTask())));
               },

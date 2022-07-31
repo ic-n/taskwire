@@ -3,20 +3,20 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-class JobCard {
+class TaskCard {
   final String title;
   final List<StepData> steps;
   final DateTime touched;
-  final int? jobIndex;
+  final int? taskIndex;
 
-  JobCard(this.title, this.steps, this.touched, [this.jobIndex]);
+  TaskCard(this.title, this.steps, this.touched, [this.taskIndex]);
 }
 
-class JobCards {
-  JobCards(this.cards, this.currentEdit);
+class TaskCards {
+  TaskCards(this.cards, this.currentEdit);
 
-  List<JobCard> cards;
-  JobCard currentEdit;
+  List<TaskCard> cards;
+  TaskCard currentEdit;
 
   @override
   int get hashCode => 0;
@@ -25,11 +25,11 @@ class JobCards {
   bool operator ==(Object other) => false;
 }
 
-class JobCardsCubit extends HydratedCubit<JobCards> {
-  JobCardsCubit() : super(JobCards([], JobCard('', [], DateTime.now())));
+class TaskCardsCubit extends HydratedCubit<TaskCards> {
+  TaskCardsCubit() : super(TaskCards([], TaskCard('', [], DateTime.now())));
 
   @override
-  Map<String, dynamic>? toJson(JobCards state) {
+  Map<String, dynamic>? toJson(TaskCards state) {
     List<Map<String, dynamic>> cards = [];
     for (var card in state.cards) {
       List<Map<String, dynamic>> steps = [];
@@ -46,8 +46,8 @@ class JobCardsCubit extends HydratedCubit<JobCards> {
   }
 
   @override
-  JobCards? fromJson(Map<String, dynamic> json) {
-    List<JobCard> cards = [];
+  TaskCards? fromJson(Map<String, dynamic> json) {
+    List<TaskCard> cards = [];
     for (var cardData in json['cards'] as List<dynamic>) {
       var card = cardData as Map<String, dynamic>;
       List<StepData> steps = [];
@@ -55,30 +55,30 @@ class JobCardsCubit extends HydratedCubit<JobCards> {
         var step = stepData as Map<String, dynamic>;
         steps.add(StepData(command: step['command'] as String));
       }
-      cards.add(JobCard(
+      cards.add(TaskCard(
         card['title'] as String,
         steps,
         DateTime.parse(card['touched'] as String),
       ));
     }
-    return JobCards(cards, JobCard('', [], DateTime.now()));
+    return TaskCards(cards, TaskCard('', [], DateTime.now()));
   }
 
   void reset() {
-    emit(JobCards([], JobCard('', [], DateTime.now())));
+    emit(TaskCards([], TaskCard('', [], DateTime.now())));
   }
 
-  void addNew(JobCard newCard) {
+  void addNew(TaskCard newCard) {
     state.cards.add(newCard);
     emit(state);
   }
 
-  void updateCard(JobCard newCard, int index) {
+  void updateCard(TaskCard newCard, int index) {
     state.cards[index] = newCard;
     emit(state);
   }
 
-  void setCurrentEdit(JobCard newCard) {
+  void setCurrentEdit(TaskCard newCard) {
     state.currentEdit = newCard;
     emit(state);
   }
@@ -98,7 +98,7 @@ class StepData {
   String out;
 }
 
-class Job {
+class Task {
   bool startNow = false;
   List<StepData> steps = [];
 
@@ -109,11 +109,11 @@ class Job {
   bool operator ==(Object other) => false;
 }
 
-class CurrentJobCubit extends Cubit<Job> {
-  CurrentJobCubit() : super(Job());
+class CurrentTaskCubit extends Cubit<Task> {
+  CurrentTaskCubit() : super(Task());
 
   void reset() {
-    emit(Job());
+    emit(Task());
   }
 
   void resetRuns() {

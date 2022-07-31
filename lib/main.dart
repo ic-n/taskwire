@@ -20,8 +20,8 @@ Future<void> main() async {
 
   var app = MultiBlocProvider(
     providers: [
-      BlocProvider<JobCardsCubit>(create: (context) => JobCardsCubit()),
-      BlocProvider<CurrentJobCubit>(create: (context) => CurrentJobCubit()),
+      BlocProvider<TaskCardsCubit>(create: (context) => TaskCardsCubit()),
+      BlocProvider<CurrentTaskCubit>(create: (context) => CurrentTaskCubit()),
       BlocProvider<MachinesCubit>(create: (context) => MachinesCubit()),
       BlocProvider<PasscodeCubit>(create: (context) => PasscodeCubit()),
     ],
@@ -71,7 +71,7 @@ class AppWrapper extends StatelessWidget {
           textTheme: const TextTheme(
               bodyText1: TextStyle(color: fg, fontFamily: 'JetBrainsMono'),
               bodyText2: TextStyle(color: fgl, fontFamily: 'JetBrainsMono'))),
-      home: const Screen(screen: PageJobs()),
+      home: const Screen(screen: PageTasks()),
     );
   }
 }
@@ -125,12 +125,12 @@ class Screen extends StatelessWidget {
                         ]
                       : [
                           BarButton(
-                            title: 'jobs',
+                            title: 'tasks',
                             onPressed: () {
                               Navigator.push(
                                   context,
                                   PageTransition<Screen>(
-                                      type: PageTransitionType.fade, child: const Screen(screen: PageJobs())));
+                                      type: PageTransitionType.fade, child: const Screen(screen: PageTasks())));
                             },
                           ),
                           BarButton(

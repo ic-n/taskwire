@@ -3,8 +3,8 @@ import 'package:taskwire/components/task.dart';
 import 'package:taskwire/components/tasks.dart';
 import 'package:taskwire/components/title.dart';
 
-class PageJobs extends StatelessWidget {
-  const PageJobs({
+class PageTasks extends StatelessWidget {
+  const PageTasks({
     Key? key,
   }) : super(key: key);
 
@@ -17,8 +17,8 @@ class PageJobs extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
-            PageTitle(title: 'Jobs'),
-            JobsWidget(),
+            PageTitle(title: 'Tasks'),
+            TasksWidget(),
           ],
         ),
       ),
@@ -31,8 +31,8 @@ class PageJobs extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
-            PageTitle(title: 'Job'),
-            JobWidget(),
+            PageTitle(title: 'Task'),
+            TaskWidget(),
           ],
         ),
       )

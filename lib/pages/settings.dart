@@ -50,8 +50,8 @@ class PageSettings extends StatelessWidget {
                       TWButton(
                         lable: 'Reset tasks',
                         callback: () {
-                          context.read<JobCardsCubit>().reset();
-                          context.read<CurrentJobCubit>().reset();
+                          context.read<TaskCardsCubit>().reset();
+                          context.read<CurrentTaskCubit>().reset();
                         },
                         color: bgl,
                       ),
@@ -66,8 +66,8 @@ class PageSettings extends StatelessWidget {
                         lable: 'Reset application',
                         callback: () {
                           storage?.clear();
-                          context.read<JobCardsCubit>().reset();
-                          context.read<CurrentJobCubit>().reset();
+                          context.read<TaskCardsCubit>().reset();
+                          context.read<CurrentTaskCubit>().reset();
                           context.read<MachinesCubit>().reset();
                           context.read<PasscodeCubit>().reset();
                         },

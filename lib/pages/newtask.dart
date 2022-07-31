@@ -27,7 +27,7 @@ class PageNewTask extends StatelessWidget {
             const SizedBox(
               height: 12,
             ),
-            BlocBuilder<JobCardsCubit, JobCards>(
+            BlocBuilder<TaskCardsCubit, TaskCards>(
               builder: (context, state) {
                 String body = '';
                 for (var element in state.currentEdit.steps) {
@@ -36,7 +36,7 @@ class PageNewTask extends StatelessWidget {
                 return NewTaskForm(
                   state.currentEdit.title,
                   body,
-                  jobIndex: state.currentEdit.jobIndex,
+                  taskIndex: state.currentEdit.taskIndex,
                 );
               },
             ),
@@ -52,8 +52,8 @@ class PageNewTask extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
-            PageTitle(title: 'Job'),
-            JobWidget(),
+            PageTitle(title: 'Task'),
+            TaskWidget(),
           ],
         ),
       )
@@ -66,12 +66,12 @@ class NewTaskForm extends StatefulWidget {
     this.title,
     this.body, {
     Key? key,
-    this.jobIndex,
+    this.taskIndex,
   }) : super(key: key);
 
   final String title;
   final String body;
-  final int? jobIndex;
+  final int? taskIndex;
 
   @override
   State<NewTaskForm> createState() => _NewTaskFormState();
@@ -80,13 +80,13 @@ class NewTaskForm extends StatefulWidget {
 class _NewTaskFormState extends State<NewTaskForm> {
   String title = '';
   String body = '';
-  int? jobIndex;
+  int? taskIndex;
 
   @override
   void initState() {
     title = widget.title;
     body = widget.body;
-    jobIndex = widget.jobIndex;
+    taskIndex = widget.taskIndex;
     super.initState();
   }
 
@@ -123,7 +123,7 @@ class _NewTaskFormState extends State<NewTaskForm> {
             setState(() {
               body = s;
             });
-            context.read<CurrentJobCubit>().steps(asSteps());
+            context.read<CurrentTaskCubit>().steps(asSteps());
           },
           lines: 9,
         ),
@@ -132,10 +132,10 @@ class _NewTaskFormState extends State<NewTaskForm> {
             lable: 'Save',
             color: confidence,
             callback: () {
-              if (jobIndex == null) {
-                context.read<JobCardsCubit>().addNew(JobCard(title, asSteps(), DateTime.now()));
+              if (taskIndex == null) {
+                context.read<TaskCardsCubit>().addNew(TaskCard(title, asSteps(), DateTime.now()));
               } else {
-                context.read<JobCardsCubit>().updateCard(JobCard(title, asSteps(), DateTime.now()), jobIndex!);
+                context.read<TaskCardsCubit>().updateCard(TaskCard(title, asSteps(), DateTime.now()), taskIndex!);
               }
               Navigator.pop(context);
             }),
