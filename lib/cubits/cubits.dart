@@ -265,10 +265,30 @@ class Passcode {
   String passcodeHash;
 
   Passcode({this.passcode, required this.passcodeHash});
+
+  @override
+  int get hashCode => 0;
+
+  @override
+  bool operator ==(Object other) => false;
+
+  String computeHash(String code) {
+    var bytes = utf8.encode(code);
+    var digest = sha512.convert(bytes);
+    var encoded = base64Encode(digest.bytes);
+    return encoded;
+  }
+
+  bool checkPasscode(String code) {
+    return passcodeHash == computeHash(code);
+  }
+
+  bool appHasPasscodeHash() => passcodeHash != '';
+  bool appHasPasscode() => passcode != null;
 }
 
 class PasscodeCubit extends HydratedCubit<Passcode> {
-  PasscodeCubit() : super(Passcode(passcodeHash: '<invalid>'));
+  PasscodeCubit() : super(Passcode(passcodeHash: ''));
 
   @override
   Map<String, dynamic>? toJson(Passcode state) {
@@ -282,25 +302,20 @@ class PasscodeCubit extends HydratedCubit<Passcode> {
     return Passcode(passcodeHash: json['passcodeHash'] as String);
   }
 
-  String hashPasscode(String code) {
-    var bytes = utf8.encode(code);
-    var digest = sha512.convert(bytes);
-    var encoded = base64Encode(digest.bytes);
-    return encoded;
-  }
-
-  bool checkPasscode(String code) => state.passcodeHash == hashPasscode(code);
-
-  bool appHasPasscode() => state.passcodeHash != '<invalid>';
-
   void newPasscode(String code) {
     state.passcode = code;
-    state.passcodeHash = hashPasscode(code);
+    state.passcodeHash = state.computeHash(code);
+    emit(state);
+  }
+
+  void reset() {
+    state.passcode = null;
+    state.passcodeHash = '';
     emit(state);
   }
 
   bool savePasscode(String code) {
-    if (checkPasscode(code)) {
+    if (state.checkPasscode(code)) {
       state.passcode = code;
       emit(state);
       return true;

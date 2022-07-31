@@ -33,6 +33,14 @@ class PageSettings extends StatelessWidget {
                     callback: (s) {
                       context.read<PasscodeCubit>().newPasscode(s);
                     },
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  TWButton(
+                    lable: 'Reset',
+                    callback: () => context.read<PasscodeCubit>().reset(),
+                    color: reassurance,
                   )
                 ],
               ),
