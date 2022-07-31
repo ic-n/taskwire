@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:taskwire/components/job.dart';
-import 'package:taskwire/components/jobs.dart';
+import 'package:taskwire/components/task.dart';
+import 'package:taskwire/components/tasks.dart';
 import 'package:taskwire/components/title.dart';
 
 class PageJobs extends StatelessWidget {

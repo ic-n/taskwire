@@ -63,7 +63,7 @@ class _JobWidgetState extends State<JobWidget> {
               children: timeline,
             );
           } else {
-            timelineView = Text("No task selected");
+            timelineView = const Text("No task selected");
           }
 
           return Tools(

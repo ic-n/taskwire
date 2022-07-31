@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taskwire/colors.dart';
-import 'package:taskwire/components/job.dart';
+import 'package:taskwire/components/task.dart';
 import 'package:taskwire/components/title.dart';
 import 'package:taskwire/components/twforms.dart';
 import 'package:taskwire/cubits/cubits.dart';

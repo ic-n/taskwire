@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:taskwire/assets.dart';
 import 'package:taskwire/colors.dart';
-import 'package:taskwire/components/jobs.dart';
+import 'package:taskwire/components/tasks.dart';
 import 'package:taskwire/components/title.dart';
 import 'package:taskwire/components/tools.dart';
 import 'package:taskwire/cubits/cubits.dart';

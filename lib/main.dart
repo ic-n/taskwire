@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +9,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:taskwire/colors.dart';
 import 'package:taskwire/components/twforms.dart';
 import 'package:taskwire/cubits/cubits.dart';
-import 'package:taskwire/pages/about.dart';
-import 'package:taskwire/pages/jobs.dart';
+import 'package:taskwire/pages/tasks.dart';
 import 'package:taskwire/pages/servers.dart';
 import 'package:taskwire/pages/settings.dart';
 
